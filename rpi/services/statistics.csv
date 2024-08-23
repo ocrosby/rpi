@@ -21,6 +21,7 @@ University of Arizona,3,0,0,1.0,0.67,0.75,0.77
 Ball State University,0,1,0,0.0,1.0,1.0,0.75
 "California State University, Fresno",1,0,0,1.0,0.5,1.0,0.75
 Canisius University,1,0,0,1.0,1.0,0.0,0.75
+Dartmouth College,1,0,0,1.0,0.5,1.0,0.75
 Eastern Michigan University,1,0,0,1.0,1.0,0.0,0.75
 Pennsylvania State University,1,1,0,0.5,1.0,0.5,0.75
 Rice University,2,1,0,0.67,0.83,0.67,0.75
@@ -89,7 +90,7 @@ Indiana State University,1,0,0,1.0,0.75,0.0,0.62
 Iona University,0,0,1,0.5,0.5,1.0,0.62
 James Madison University,0,0,1,0.5,1.0,0.0,0.62
 Loyola Marymount University,1,0,0,1.0,0.5,0.5,0.62
-Marshall University,0,0,1,0.5,1.0,0.0,0.62
+Marshall University,0,1,1,0.25,1.0,0.25,0.62
 Rider University,1,0,1,0.75,0.5,0.75,0.62
 "Rutgers, The State University of New Jersey, New Brunswick",0,0,1,0.5,1.0,0.0,0.62
 St. John's University (New York),0,0,1,0.5,1.0,0.0,0.62
