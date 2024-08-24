@@ -8,8 +8,8 @@ from typing import Optional
 
 import requests
 
-from rpi.models.match import Match
-from rpi.calculations import get_wins_for_team, get_losses_for_team, get_draws_for_team, wp, owp, oowp, rpi
+from ripper.models.match import Match
+from ripper.calculations import get_wins_for_team, get_losses_for_team, get_draws_for_team, wp, owp, oowp, rpi
 
 
 def generate_url(target_date: datetime) -> str:
@@ -197,7 +197,7 @@ def calculate_statistics(matches: list[Match], ndigits: int = 2) -> dict:
             "wp": wp_value,
             "owp": owp_value,
             "oowp": oowp_value,
-            "rpi": rpi(wp_value, owp_value, oowp_value, ndigits)
+            "ripper": rpi(wp_value, owp_value, oowp_value, ndigits)
         }
 
     return statistics
@@ -206,10 +206,10 @@ def calculate_statistics(matches: list[Match], ndigits: int = 2) -> dict:
 def save_stats_to_csv(file_name: str, statistics: dict):
     with open(file_name, mode='w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(['team', 'wins', 'losses', 'draws', 'wp', 'owp', 'oowp', 'rpi'])
+        writer.writerow(['team', 'wins', 'losses', 'draws', 'wp', 'owp', 'oowp', 'ripper'])
 
-        # Sort the statistics by the 'rpi' value in decending order and then by team name alphabetically
-        sorted_statistics = sorted(statistics.items(), key=lambda item: (-item[1]['rpi'], item[0]))
+        # Sort the statistics by the 'ripper' value in decending order and then by team name alphabetically
+        sorted_statistics = sorted(statistics.items(), key=lambda item: (-item[1]['ripper'], item[0]))
 
         for current_team_name, current_team_statistics in sorted_statistics:
             writer.writerow([
@@ -220,7 +220,7 @@ def save_stats_to_csv(file_name: str, statistics: dict):
                 current_team_statistics["wp"],
                 current_team_statistics["owp"],
                 current_team_statistics["oowp"],
-                current_team_statistics["rpi"]
+                current_team_statistics["ripper"]
             ])
 
 
