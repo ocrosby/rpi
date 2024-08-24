@@ -1,16 +1,15 @@
 """
 This module contains the MatchService class.
 """
-import csv
-
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from typing import Optional
 
 import requests
 
+from ripper.utils import save_matches_to_csv, save_stats_to_csv, calculate_statistics, sort_stats
 from ripper.models.match import Match
-from ripper.calculations import get_wins_for_team, get_losses_for_team, get_draws_for_team, wp, owp, oowp, rpi
 
+SEASON_START_DATE = datetime(2024, 8, 14)
 
 def generate_url(target_date: datetime) -> str:
     """
@@ -50,7 +49,7 @@ def get_match_from_game(game: dict) -> Match:
     """
     Get a match from a game dictionary
 
-    :param game:
+    :param game: Game dictionary
     :return:
     """
     game = game.get('game')
@@ -109,124 +108,9 @@ def get_matches_from(from_date: datetime, state: Optional[str] = None) -> list[M
     return response_matches
 
 
-def save_matches_to_csv(filename: str, matches: list[Match], state: Optional[str] = None):
-    """
-    Save the matches to a CSV file
-
-    :param matches:
-    :param filename:
-    :return:
-    """
-    with open(filename, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        # Write the header
-        if state is None or state == "final":
-            writer.writerow(
-                ['home_team', 'away_team', 'home_score', 'away_score', 'start_date'])
-
-            # Write the match data
-            for match in matches:
-                writer.writerow([
-                    match.home_team,
-                    match.away_team,
-                    match.home_score,
-                    match.away_score,
-                    match.start_date
-                ])
-
-        elif state == "live":
-            writer.writerow(['home_team', 'away_team', 'home_score', 'away_score', 'start_date', 'start_time'])
-
-            # Write the match data
-            for match in matches:
-                writer.writerow([
-                    match.home_team,
-                    match.away_team,
-                    match.home_score,
-                    match.away_score,
-                    match.start_date,
-                    match.start_time
-                ])
-        elif state == "pre":
-            writer.writerow(['home_team', 'away_team', 'start_date', 'start_time'])
-
-            # Write the match data
-            for match in matches:
-                writer.writerow([
-                    match.home_team,
-                    match.away_team,
-                    match.start_date,
-                    match.start_time
-                ])
-        else:
-            print(f"Invalid state: {state}")
-
-
-def list_team_names(matches: list[Match]) -> list[str]:
-    """
-    List the team names from the matches
-
-    :param matches:
-    :return: List of team names
-    """
-    team_names_set = set()
-
-    for match in matches:
-        team_names_set.add(match.home_team)
-        team_names_set.add(match.away_team)
-
-    team_names_list = list(team_names_set)
-    team_names_list.sort()
-
-    return team_names_list
-
-
-def calculate_statistics(matches: list[Match], ndigits: int = 2) -> dict:
-    statistics = {}
-
-    team_names = list_team_names(matches)
-    for current_team_name in team_names:
-        wp_value = wp(matches, current_team_name, None, ndigits)
-        owp_value = owp(matches, current_team_name, ndigits)
-        oowp_value = oowp(matches, current_team_name, ndigits)
-
-        statistics[current_team_name] = {
-            "wins": get_wins_for_team(matches, current_team_name, None),
-            "losses": get_losses_for_team(matches, current_team_name, None),
-            "draws": get_draws_for_team(matches, current_team_name, None),
-            "wp": wp_value,
-            "owp": owp_value,
-            "oowp": oowp_value,
-            "ripper": rpi(wp_value, owp_value, oowp_value, ndigits)
-        }
-
-    return statistics
-
-
-def save_stats_to_csv(file_name: str, statistics: dict):
-    with open(file_name, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(['team', 'wins', 'losses', 'draws', 'wp', 'owp', 'oowp', 'ripper'])
-
-        # Sort the statistics by the 'ripper' value in decending order and then by team name alphabetically
-        sorted_statistics = sorted(statistics.items(), key=lambda item: (-item[1]['ripper'], item[0]))
-
-        for current_team_name, current_team_statistics in sorted_statistics:
-            writer.writerow([
-                current_team_name,
-                current_team_statistics["wins"],
-                current_team_statistics["losses"],
-                current_team_statistics["draws"],
-                current_team_statistics["wp"],
-                current_team_statistics["owp"],
-                current_team_statistics["oowp"],
-                current_team_statistics["ripper"]
-            ])
-
-
 if __name__ == "__main__":
     current_time = datetime.now()
-    season_start_date = datetime(2023, 8, 1)
+    season_start_date = datetime(2024, 8, 1)
 
     completed_matches = get_matches_from(season_start_date, "final")
     live_matches = get_matches_on(current_time, "live")
@@ -236,6 +120,5 @@ if __name__ == "__main__":
     save_matches_to_csv("live_matches.csv", live_matches, "live")
     save_matches_to_csv("upcoming_matches.csv", upcoming_matches, "pre")
 
-    stats = calculate_statistics(completed_matches, 2)
-
+    stats = sort_stats(calculate_statistics(completed_matches, 2))
     save_stats_to_csv("statistics.csv", stats)

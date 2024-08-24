@@ -1,6 +1,6 @@
 from typing import Optional
 
-from rpi.models.match import Match
+from ripper.models.match import Match
 
 
 def get_wins_for_team(matches: list[Match], team_name: str, skip_team_name: Optional[str]) -> int:
@@ -201,8 +201,8 @@ def owp(matches: list[Match], target_team_name: str, ndigits: int = 2) -> float:
 
     sum_so_far = float(0)
     number_of_matches = 0
-    for oppenent_name, winning_percentage in opponent_winning_percentage_dict.items():
-        meeting_count = get_meeting_count(target_team_name, oppenent_name, matches)
+    for opponent_name, winning_percentage in opponent_winning_percentage_dict.items():
+        meeting_count = get_meeting_count(target_team_name, opponent_name, matches)
         number_of_matches += meeting_count
         sum_so_far += winning_percentage * float(meeting_count)
 

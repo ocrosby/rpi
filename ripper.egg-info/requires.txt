@@ -1,0 +1,4 @@
+requests
+click
+urllib3
+setuptools
