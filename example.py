@@ -1,11 +1,15 @@
 import datetime
 
+<<<<<<< HEAD
 from dataclasses import dataclass
 
+=======
+>>>>>>> 000d4ad (chore: wip)
 import requests
 
 START_DATE = "2024/08/15"
 
+<<<<<<< HEAD
 @dataclass
 class Match:
     home_team: str
@@ -157,3 +161,29 @@ if __name__ == '__main__':
     print("\n\nUpcoming matches")
     for match in get_upcoming_matches():
         print(f"{match.home_team} vs {match.away_team} - {match.start_date} - {match.start_time}")
+=======
+def get_url(year: int, month: int, day: int) -> str:
+    return f"https://data.ncaa.com/casablanca/scoreboard/soccer-women/d1/{year}/{month:02}/{day:02}/scoreboard.json"
+
+def get_urls(start_date: str) -> list[str]:
+    # From the specified start date to the current date return a list of URL's for each day.
+    urls = []
+
+    current_date = datetime.datetime.now()
+    start_date = datetime.datetime.strptime(start_date, "%Y/%m/%d")
+
+
+    return urls
+
+
+
+if __name__ == '__main__':
+    url = get_url(2024, 8, 15)
+
+
+
+    response = requests.get(url)
+    data = response.json()
+
+    print(data)
+>>>>>>> 000d4ad (chore: wip)
