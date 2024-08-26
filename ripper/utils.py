@@ -25,7 +25,7 @@ def sort_stats(stats: dict) -> list[tuple[str, dict]]:
     :param stats: The dictionary of statistics by team name.
     :return: List of tuples containing the team name and the statistics
     """
-    return sorted(stats.items(), key=lambda item: (-item[1]['ripper'], item[0]))
+    return sorted(stats.items(), key=lambda item: (-item[1]['rpi'], item[0]))
 
 
 def save_stats_to_csv(filename: str, stats_list: list[tuple[str, dict]]):
@@ -38,7 +38,7 @@ def save_stats_to_csv(filename: str, stats_list: list[tuple[str, dict]]):
     """
     with open(filename, mode='w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(['team', 'wins', 'losses', 'draws', 'wp', 'owp', 'oowp', 'ripper'])
+        writer.writerow(['team', 'wins', 'losses', 'draws', 'wp', 'owp', 'oowp', 'rpi'])
 
         for current_team_name, current_team_statistics in stats_list:
             writer.writerow([
@@ -149,7 +149,7 @@ def calculate_statistics(matches: list[Match], precision: int = 2) -> dict:
             "wp": wp_value,
             "owp": owp_value,
             "oowp": oowp_value,
-            "ripper": rpi(wp_value, owp_value, oowp_value, precision)
+            "rpi": rpi(wp_value, owp_value, oowp_value, precision)
         }
 
     return statistics
