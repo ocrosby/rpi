@@ -110,7 +110,7 @@ def get_matches_from(from_date: datetime, state: Optional[str] = None) -> list[M
 
 if __name__ == "__main__":
     current_time = datetime.now()
-    season_start_date = datetime(2024, 8, 1)
+    season_start_date = datetime(2023, 8, 1)
 
     completed_matches = get_matches_from(season_start_date, "final")
     live_matches = get_matches_on(current_time, "live")
