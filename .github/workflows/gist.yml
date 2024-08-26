@@ -1,0 +1,39 @@
+# .github/workflows/generate_gist.yml
+name: Generate and Post Gist
+
+on:
+  push:
+    branches:
+      - main  # Run the workflow when there's a push to the main branch
+  workflow_dispatch:  # Allows manual triggering of the workflow
+  schedule:
+    - cron: '0 0 * * *'  # Run the workflow daily at midnight UTC
+      
+jobs:
+  generate_and_post_gist:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install requests
+        python3 -m install -e .
+
+    - name: Generate Data
+      run: |
+        ripper elo --output=elo.csv
+
+    - name: Run Python script to generate and post Gist
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        ripper post --file=elo.csv --description="Elo Ratings" --public=false --token=${{ secrets.GITHUB_TOKEN }}

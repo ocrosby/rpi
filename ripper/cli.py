@@ -2,6 +2,7 @@ import csv
 from datetime import datetime
 
 import click
+import requests
 
 import ripper.services.ncaa as ncaa_service
 
@@ -23,6 +24,46 @@ def common_options(func):
 @click.group()
 def cli():
     pass
+
+
+@cli.command('post')
+@click.argument('file_path', type=click.Path(exists=True))
+@click.option('-d', '--description', default='CSV file', help='Description of the Gist')
+@click.option('--public', is_flag=True, help='Make the Gist public')
+@click.option('--token', envvar='GITHUB_TOKEN', help='GitHub token for authentication')
+def post_gist(file_path, gist_description, public, token):
+    """
+    Post a CSV file to a Gist
+    """
+    if not token:
+        click.echo('GitHub token is required. Set it using --token option or GITHUB_TOKEN environment variable.')
+        return
+
+    with open(file_path, 'r') as file:
+        content = file.read()
+
+    gist_data = {
+        'description': gist_description,
+        'public': public,
+        'files': {
+            file_path: {
+                'content': content
+            }
+        }
+    }
+
+    response = requests.post(
+        'https://api.github.com/gists',
+        json=gist_data,
+        headers={'Authorization': f'token {token}'}
+    )
+
+    if response.status_code == 201:
+        click.echo('Gist created successfully!')
+        click.echo(response.json()['html_url'])
+    else:
+        click.echo('Failed to create Gist')
+        click.echo(response.json())
 
 
 @cli.command('elo')
