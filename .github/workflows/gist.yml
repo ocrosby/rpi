@@ -30,10 +30,14 @@ jobs:
 
     - name: Generate Data
       run: |
+        ripper matches -o matches.csv
+        ripper rpi -o rpi.csv
         ripper elo --output=elo.csv
 
     - name: Run Python script to generate and post Gist
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+        ripper post --file=matches.csv --description="Matches" --public=false --token=${{ secrets.GITHUB_TOKEN }}
+        ripper post --file=rpi.csv --description="RPI Ratings" --public=false --token=${{ secrets.GITHUB_TOKEN }}
         ripper post --file=elo.csv --description="Elo Ratings" --public=false --token=${{ secrets.GITHUB_TOKEN }}
