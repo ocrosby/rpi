@@ -40,7 +40,7 @@ def post_gist(file_path, description, public, token):
         click.echo('GitHub token is required. Set it using --token option or GITHUB_TOKEN environment variable.')
         return
 
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         content = file.read()
 
     gist_data = {
@@ -54,9 +54,12 @@ def post_gist(file_path, description, public, token):
     }
 
     response = requests.post(
-        'https://api.github.com/gists',
+        url='https://api.github.com/gists',
         json=gist_data,
-        headers={'Authorization': f'token {token}'}
+        headers={
+            'Authorization': f'token {token}',
+            'Content-Type': 'application/json'
+        }
     )
 
     if response.status_code == 201:
