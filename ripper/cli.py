@@ -32,7 +32,7 @@ def cli():
 @click.option('-d', '--description', default='CSV file', help='Description of the Gist')
 @click.option('--public', is_flag=True, help='Make the Gist public')
 @click.option('--token', envvar='GITHUB_TOKEN', help='GitHub token for authentication')
-def post_gist(file_path, gist_description, public, token):
+def post_gist(file_path, description, public, token):
     """
     Post a CSV file to a Gist
     """
@@ -44,7 +44,7 @@ def post_gist(file_path, gist_description, public, token):
         content = file.read()
 
     gist_data = {
-        'description': gist_description,
+        'description': description,
         'public': public,
         'files': {
             file_path: {
