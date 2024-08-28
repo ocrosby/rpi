@@ -9,13 +9,14 @@ on:
   schedule:
     - cron: '0 */2 * * *'  # Run the workflow daily at midnight UTC
 
-permissions:
-  contents: write
-  gists: write
-
 jobs:
   generate_and_post_gists:
     runs-on: ubuntu-latest
+
+    # Define permissions only for this job
+    permissions:
+      contents: write
+      gists: write
 
     steps:
     - name: Checkout repository
