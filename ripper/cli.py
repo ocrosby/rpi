@@ -142,9 +142,9 @@ def record(source, output, start_date):
         if output:
             with open(output, mode='w', newline='', encoding='utf-8') as file:
                 writer = csv.writer(file)
-                writer.writerow(['Rank', 'Team', 'RPI'])
-                for rank, team, rpi in results:
-                    writer.writerow([rank, team, rpi])
+                writer.writerow(['Rank', 'Team', 'Record'])
+                for rank, team, record in results:
+                    writer.writerow([rank, team, record])
         else:
             for rank, team, record in results:
                 click.echo(f"#{rank} Team: '{team}', Record: {record}")
