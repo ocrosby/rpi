@@ -27,6 +27,78 @@ def cli():
     pass
 
 
+def find_gist_by_filename(token, filename):
+    """
+    Find a Gist by filename.
+    """
+    response = requests.get(
+        'https://api.github.com/gists',
+        headers={'Authorization': f'token {token}'}
+    )
+
+    if response.status_code != 200:
+        print('Failed to retrieve gists')
+        print(response.json())
+        sys.exit(1)
+
+    gists = response.json()
+    for gist in gists:
+        if filename in gist['files']:
+            return gist['id']
+    return None
+
+def post_or_patch_gist(file_path, description, public, token):
+    """
+    Post or patch a CSV file to a Gist.
+    """
+    if not token:
+        print('GitHub token is required. Set it using --token option or GITHUB_TOKEN environment variable.')
+        sys.exit(1)
+
+    with open(file_path, 'r', encoding='utf-8') as file:
+        content = file.read()
+
+    gist_data = {
+        'description': description,
+        'public': public,
+        'files': {
+            os.path.basename(file_path): {
+                'content': content
+            }
+        }
+    }
+
+    gist_id = find_gist_by_filename(token, os.path.basename(file_path))
+
+    if gist_id:
+        response = requests.patch(
+            f'https://api.github.com/gists/{gist_id}',
+            json=gist_data,
+            headers={
+                'Authorization': f'token {token}',
+                'Content-Type': 'application/json'
+            }
+        )
+        action = 'patched'
+    else:
+        response = requests.post(
+            'https://api.github.com/gists',
+            json=gist_data,
+            headers={
+                'Authorization': f'token {token}',
+                'Content-Type': 'application/json'
+            }
+        )
+        action = 'created'
+
+    if response.status_code in [200, 201]:
+        print(f'Gist {action} successfully!')
+        print(response.json()['html_url'])
+    else:
+        print(f'Failed to {action} Gist')
+        print(response.json())
+        sys.exit(1)
+
 @cli.command('post')
 @click.argument('file_path', type=click.Path(exists=True))
 @click.option('-d', '--description', default='CSV file', help='Description of the Gist')
@@ -36,39 +108,7 @@ def post_gist(file_path, description, public, token):
     """
     Post a CSV file to a Gist
     """
-    if not token:
-        click.echo('GitHub token is required. Set it using --token option or GITHUB_TOKEN environment variable.')
-        return
-
-    with open(file_path, 'r', encoding='utf-8') as file:
-        content = file.read()
-
-    gist_data = {
-        'description': description,
-        'public': public,
-        'files': {
-            file_path: {
-                'content': content
-            }
-        }
-    }
-
-    response = requests.post(
-        url='https://api.github.com/gists',
-        json=gist_data,
-        headers={
-            'Authorization': f'token {token}',
-            'Content-Type': 'application/json'
-        }
-    )
-
-    if response.status_code == 201:
-        click.echo('Gist created successfully!')
-        click.echo(response.json()['html_url'])
-    else:
-        click.echo('Failed to create Gist')
-        click.echo(response.json())
-        sys.exit(1)
+    post_or_patch_gist(file_path, description, public, token)
 
 
 @cli.command('elo')
