@@ -7,7 +7,7 @@ on:
       - main  # Run the workflow when there's a push to the main branch
   workflow_dispatch:  # Allows manual triggering of the workflow
   schedule:
-    - cron: '0 0 * * *'  # Run the workflow daily at midnight UTC
+    - cron: '0 */2 * * *'  # Run the workflow daily at midnight UTC
       
 jobs:
   generate_and_post_gist:
@@ -33,6 +33,12 @@ jobs:
         ripper matches -o matches.csv
         ripper rpi -o rpi.csv
         ripper elo --output=elo.csv
+
+    - name: Verify GitHub token permissions
+      run: |
+        echo "Checking GitHub token permissions..."
+        curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/user
+        curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/gists
 
     - name: Run Python script to generate and post Gist
       env:
