@@ -8,9 +8,13 @@ on:
   workflow_dispatch:  # Allows manual triggering of the workflow
   schedule:
     - cron: '0 */2 * * *'  # Run the workflow daily at midnight UTC
-      
+
+permissions:
+  contents: write
+  gists: write
+
 jobs:
-  generate_and_post_gist:
+  generate_and_post_gists:
     runs-on: ubuntu-latest
 
     steps:
