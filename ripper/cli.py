@@ -77,7 +77,19 @@ def elo(source, output, start_date):
         if not start_date:
             start_date = ncaa_service.SEASON_START_DATE
 
-        my_matches: list[Match] = ncaa_service.get_matches_from(start_date, state='final')
+        # Check to see if the matches.csv file exists, if it does, use that instead of the API
+        if os.path.exists('matches.csv'):
+            with open('matches.csv', mode='r', newline='', encoding='utf-8') as file:
+                reader = csv.reader(file)
+                next(reader)
+                my_matches = [Match(*row) for row in reader]
+        else:
+            my_matches: list[Match] = ncaa_service.get_matches_from(start_date, state='final')
+
+            # Save the matches to a CSV file
+            save_matches_to_csv('matches.csv', my_matches, 'final')
+
+        # Calculate the Elo ratings
         results = process_matches_with_elo(my_matches)
     else:
         raise NotImplementedError(f"The {source} data source is not implemented yet")
