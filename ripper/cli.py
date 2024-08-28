@@ -11,6 +11,8 @@ from ripper.models.match import Match
 from ripper.utils import save_matches_to_csv
 from ripper.elo import process_matches_with_elo
 from ripper.indices.rpi import RPIIndex
+from ripper.indices.record import RecordIndex
+
 
 def common_options(func):
     """
@@ -109,6 +111,46 @@ def post_gist(file_path, description, public, token):
     Post a CSV file to a Gist
     """
     post_or_patch_gist(file_path, description, public, token)
+
+
+@cli.command('record')
+@common_options
+def record(source, output, start_date):
+    """
+    Calculate records for each team.
+    """
+    if source == 'ncaa':
+        if not start_date:
+            start_date = ncaa_service.SEASON_START_DATE
+
+        # Check to see if the matches.csv file exists, if it does, use that instead of the API
+        if os.path.exists('matches.csv'):
+            with open('matches.csv', mode='r', newline='', encoding='utf-8') as file:
+                reader = csv.reader(file)
+                next(reader)
+                my_matches = [Match(*row) for row in reader]
+        else:
+            my_matches: list[Match] = ncaa_service.get_matches_from(start_date, state='final')
+
+            # Save the matches to a CSV file
+            save_matches_to_csv('matches.csv', my_matches, 'final')
+
+        # Calculate the record
+        record_index = RecordIndex()
+        results = record_index.calculate(my_matches)
+
+        if output:
+            with open(output, mode='w', newline='', encoding='utf-8') as file:
+                writer = csv.writer(file)
+                writer.writerow(['Rank', 'Team', 'RPI'])
+                for rank, team, rpi in results:
+                    writer.writerow([rank, team, rpi])
+        else:
+            for rank, team, record in results:
+                click.echo(f"#{rank} Team: '{team}', Record: {record}")
+
+    else:
+        raise NotImplementedError(f"The {source} data source is not implemented yet")
 
 
 @cli.command('elo')

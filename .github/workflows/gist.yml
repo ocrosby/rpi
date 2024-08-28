@@ -49,3 +49,4 @@ jobs:
         ripper post --description="Matches" --public --token=${{ secrets.GIST_PAT }} matches.csv
         ripper post --description="RPI Ratings" --public --token=${{ secrets.GIST_PAT }} rpi.csv
         ripper post --description="Elo Ratings" --public --token=${{ secrets.GIST_PAT }} elo.csv
+        ripper post --description="Record" --public --token=${{ secrets.GIST_PAT }} record.csv
