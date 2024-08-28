@@ -153,3 +153,12 @@ def calculate_statistics(matches: list[Match], precision: int = 2) -> dict:
         }
 
     return statistics
+
+def find_root_dir():
+    """
+    Find the root directory of the project
+
+    :return: The root directory of the project
+    """
+    import os
+    return os.path.dirname(os.path.abspath(__file__))

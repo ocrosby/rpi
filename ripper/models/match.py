@@ -79,3 +79,15 @@ class Match:
 
     def contains(self, team: str) -> bool:
         return team in [self.home_team, self.away_team]
+
+
+    @staticmethod
+    def load_from_file(filename: str) -> list:
+        matches = []
+        with open(filename, 'r') as file:
+            for line in file:
+                data = line.strip().split(',')
+                match = Match(*data)
+                matches.append(match)
+
+        return matches

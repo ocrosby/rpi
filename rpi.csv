@@ -1,0 +1,366 @@
+Rank,Team,RPI
+1,"Indiana University, Bloomington",0.95
+2,Lehigh University,0.88
+3,University of Virginia,0.86
+4,Florida State University,0.85
+5,"University of North Carolina, Chapel Hill",0.85
+6,Stanford University,0.84
+7,Michigan State University,0.83
+8,Auburn University,0.8
+9,University of Pittsburgh,0.8
+10,University of Kentucky,0.77
+11,University of Notre Dame,0.76
+12,Ball State University,0.75
+13,Eastern Michigan University,0.75
+14,Fordham University,0.75
+15,Clemson University,0.74
+16,Pennsylvania State University,0.74
+17,"University at Buffalo, the State University of New York",0.74
+18,University of Iowa,0.74
+19,Xavier University,0.74
+20,Central Michigan University,0.73
+21,Syracuse University,0.73
+22,University of Texas at Austin,0.73
+23,Washington State University,0.73
+24,Elon University,0.72
+25,University of Arizona,0.72
+26,"University of California, Los Angeles",0.72
+27,Youngstown State University,0.72
+28,Purdue University,0.71
+29,Rice University,0.71
+30,The Citadel,0.71
+31,"University of Minnesota, Twin Cities",0.71
+32,New Mexico State University,0.7
+33,University of Maine,0.7
+34,University of Wisconsin-Madison,0.7
+35,Virginia Military Institute,0.7
+36,Brigham Young University,0.69
+37,Butler University,0.69
+38,Canisius University,0.69
+39,The Ohio State University,0.69
+40,University of Southern California,0.69
+41,Winthrop University,0.69
+42,Creighton University,0.68
+43,Indiana State University,0.68
+44,Siena College,0.68
+45,Texas State University,0.68
+46,Vanderbilt University,0.68
+47,Dartmouth College,0.67
+48,Saint Louis University,0.67
+49,University of New Mexico,0.67
+50,"University of South Carolina, Columbia",0.67
+51,Utah State University,0.67
+52,Loyola University Chicago,0.66
+53,Santa Clara University,0.66
+54,The University of Southern Mississippi,0.66
+55,"University of California, Davis",0.66
+56,University of Memphis,0.66
+57,University of Utah,0.66
+58,Western Kentucky University,0.66
+59,Providence College,0.65
+60,San Diego State University,0.65
+61,"University of Arkansas, Fayetteville",0.65
+62,University of Dayton,0.65
+63,Duke University,0.64
+64,East Carolina University,0.64
+65,Grand Canyon University,0.64
+66,Oklahoma State University,0.64
+67,University of Oklahoma,0.64
+68,"University of Missouri, Columbia",0.63
+69,American University,0.62
+70,Ashland University,0.62
+71,Belmont University,0.62
+72,Columbia University-Barnard College,0.62
+73,Harvard University,0.62
+74,Monmouth University,0.62
+75,Texas Christian University,0.62
+76,University of Alabama,0.62
+77,University of Texas at San Antonio,0.62
+78,"California State University, Fullerton",0.61
+79,Idaho State University,0.61
+80,University of Kansas,0.61
+81,University of Louisville,0.61
+82,"University of Tennessee, Knoxville",0.61
+83,Bellarmine University,0.6
+84,Eastern Illinois University,0.6
+85,Marshall University,0.6
+86,Presbyterian College,0.6
+87,U.S. Military Academy,0.6
+88,University of Denver,0.6
+89,University of Florida,0.6
+90,"University of Massachusetts, Amherst",0.6
+91,University of Montana,0.6
+92,Boise State University,0.59
+93,Duquesne University,0.59
+94,Illinois State University,0.59
+95,Ohio University,0.59
+96,Old Dominion University,0.59
+97,Texas A&M University-Corpus Christi,0.59
+98,University of Central Florida,0.59
+99,Boston College,0.58
+100,Campbell University,0.58
+101,Long Beach State University,0.58
+102,Louisiana State University,0.58
+103,Pepperdine University,0.58
+104,Seton Hall University,0.58
+105,"University of Arkansas, Pine Bluff",0.58
+106,"University of California, Riverside",0.58
+107,University of Louisiana Monroe,0.58
+108,Liberty University,0.57
+109,Merrimack College,0.57
+110,New Jersey Institute of Technology,0.57
+111,Northwestern University,0.57
+112,Troy University,0.57
+113,"University of California, Berkeley",0.57
+114,University of North Texas,0.57
+115,Utah Tech University,0.57
+116,Virginia Polytechnic Institute and State University,0.57
+117,Baylor University,0.56
+118,Coastal Carolina University,0.56
+119,Furman University,0.56
+120,Southeast Missouri State University,0.56
+121,University of Illinois Urbana-Champaign,0.56
+122,University of Missouri-Kansas City,0.56
+123,University of Nebraska Omaha,0.56
+124,University of North Florida,0.56
+125,Utah Valley University,0.56
+126,Wofford College,0.56
+127,California Polytechnic State University,0.55
+128,Manhattan University,0.55
+129,Mississippi State University,0.55
+130,Missouri State University,0.55
+131,Purdue University Fort Wayne,0.55
+132,Queens University of Charlotte,0.55
+133,Southern Methodist University,0.55
+134,University of Alabama at Birmingham,0.55
+135,University of Connecticut,0.55
+136,Western Michigan University,0.55
+137,Berry College,0.54
+138,Jacksonville University,0.54
+139,Kent State University,0.54
+140,Northern Arizona University,0.54
+141,Southern Illinois University at Carbondale,0.54
+142,"Texas A&M University, College Station",0.54
+143,University of Georgia,0.54
+144,University of Houston,0.54
+145,University of Idaho,0.54
+146,University of Oregon,0.54
+147,University of San Francisco,0.54
+148,Bucknell University,0.53
+149,DePaul University,0.53
+150,Drake University,0.53
+151,Drexel University,0.53
+152,Florida International University,0.53
+153,Samford University,0.53
+154,Texas Tech University,0.53
+155,Union University,0.53
+156,University of Louisiana at Lafayette,0.53
+157,University of North Alabama,0.53
+158,University of the Pacific,0.53
+159,Gonzaga University,0.52
+160,James Madison University,0.52
+161,Loyola University Maryland,0.52
+162,Saint Peter's University,0.52
+163,The University of North Carolina at Greensboro,0.52
+164,University of Mississippi,0.52
+165,University of Richmond,0.52
+166,University of South Florida,0.52
+167,Wake Forest University,0.52
+168,Emory & Henry University,0.51
+169,Mercer University,0.51
+170,The University of Tulsa,0.51
+171,University at Albany,0.51
+172,University of Akron,0.51
+173,"University of Colorado, Boulder",0.51
+174,"University of Hawaii, Manoa",0.51
+175,University of Nebraska-Lincoln,0.51
+176,Davidson College,0.5
+177,Gardner-Webb University,0.5
+178,John Brown,0.5
+179,Lafayette College,0.5
+180,Le Moyne College,0.5
+181,Marquette University,0.5
+182,Quinnipiac University,0.5
+183,Southern Illinois University Edwardsville,0.5
+184,University of New Hampshire,0.5
+185,Arizona State University,0.49
+186,Austin Peay State University,0.49
+187,College of Charleston (South Carolina),0.49
+188,Nicholls State University,0.49
+189,Oakland University,0.49
+190,University of North Dakota,0.49
+191,California Baptist University,0.48
+192,"California State University, Sacramento",0.48
+193,College of the Holy Cross,0.48
+194,Colorado College,0.48
+195,George Mason University,0.48
+196,Mercyhurst University,0.48
+197,Murray State University,0.48
+198,St. Mary's University (Texas),0.48
+199,Temple University,0.48
+200,U.S. Air Force Academy,0.48
+201,University of Central Arkansas,0.48
+202,University of Evansville,0.48
+203,University of the Incarnate Word,0.48
+204,West Virginia University,0.48
+205,William & Mary,0.48
+206,Appalachian State University,0.47
+207,Eastern Washington University,0.47
+208,Georgetown University,0.47
+209,Howard University,0.47
+210,Marist College,0.47
+211,Niagara University,0.47
+212,North Carolina State University,0.47
+213,Saint Joseph's University,0.47
+214,U.S. Naval Academy,0.47
+215,University of Illinois Chicago,0.47
+216,East Tennessee State University,0.46
+217,High Point University,0.46
+218,Jacksonville State University,0.46
+219,Princeton University,0.46
+220,Radford University,0.46
+221,"University of Maryland, College Park",0.46
+222,University of North Carolina Wilmington,0.46
+223,University of South Alabama,0.46
+224,West Chester University of Pennsylvania,0.46
+225,Cleveland State University,0.45
+226,Florida Atlantic University,0.45
+227,La Salle University,0.45
+228,Lindenwood University,0.45
+229,Miami University (Ohio),0.45
+230,"Rutgers, The State University of New Jersey, New Brunswick",0.45
+231,St. Bonaventure University,0.45
+232,Stephen F. Austin State University,0.45
+233,University of Arkansas at Little Rock,0.45
+234,University of Michigan,0.45
+235,University of Portland,0.45
+236,University of Rhode Island,0.45
+237,Wright State University,0.45
+238,Emporia State University,0.44
+239,Florida Gulf Coast University,0.44
+240,Northwestern State University,0.44
+241,South Carolina State University,0.44
+242,St. John's University (New York),0.44
+243,Tiffin University,0.44
+244,University of Detroit Mercy,0.44
+245,University of St. Thomas (Minnesota),0.44
+246,University of Wyoming,0.44
+247,Bowling Green State University,0.43
+248,"California State University, Fresno",0.43
+249,Middle Tennessee State University,0.43
+250,Morehead State University,0.43
+251,Seattle University,0.43
+252,Stetson University,0.43
+253,Texas A&M University-Commerce,0.43
+254,The University of North Carolina at Charlotte,0.43
+255,"California State University, Bakersfield",0.42
+256,Colorado State University,0.42
+257,Louisiana Tech University,0.42
+258,Mount St. Mary's University,0.42
+259,North Dakota State University,0.42
+260,Sacred Heart University,0.42
+261,San Jose State University,0.42
+262,Tarleton State University,0.42
+263,"University of California, Santa Barbara",0.42
+264,University of Cincinnati,0.42
+265,University of South Dakota,0.42
+266,University of Texas at El Paso,0.42
+267,University of Washington,0.42
+268,Villanova University,0.42
+269,Virginia Commonwealth University,0.42
+270,Binghamton University,0.41
+271,George Washington University,0.41
+272,Iowa State University,0.41
+273,Northern Kentucky University,0.41
+274,Oral Roberts University,0.41
+275,Sam Houston State University,0.41
+276,South Dakota State University,0.41
+277,"University of California, San Diego",0.41
+278,University of Vermont,0.41
+279,Bryant University,0.4
+280,"California State University, Northridge",0.4
+281,Grambling State University,0.4
+282,Montana State University Billings,0.4
+283,Saint Mary's College of California,0.4
+284,Texas Southern University,0.4
+285,"University of Minnesota, Crookston",0.4
+286,Longwood University,0.39
+287,Northern Illinois University,0.39
+288,Robert Morris University,0.39
+289,Fairfield University,0.38
+290,Hofstra University,0.38
+291,Lamar University,0.38
+292,Lipscomb University,0.38
+293,Saint Francis University ,0.38
+294,"University of California, Irvine",0.38
+295,University of San Diego,0.38
+296,Alabama A&M University,0.37
+297,Loyola Marymount University,0.37
+298,Stony Brook University,0.37
+299,University of Delaware,0.37
+300,"University of Nevada, Las Vegas",0.37
+301,University of Tennessee at Chattanooga,0.37
+302,University of Tennessee at Martin,0.37
+303,Alabama State University,0.36
+304,Western Carolina University,0.36
+305,Abilene Christian University,0.35
+306,Long Island University,0.35
+307,Southeastern Louisiana University,0.35
+308,The University of Texas Rio Grande Valley,0.35
+309,Towson University,0.35
+310,"University of Nevada, Reno",0.35
+311,Weber State University,0.35
+312,McNeese State University,0.34
+313,University of North Carolina Asheville,0.34
+314,University of Northern Colorado,0.34
+315,Valparaiso University,0.34
+316,Central Connecticut State University,0.33
+317,Rider University,0.33
+318,"Southern University, Baton Rouge",0.33
+319,University of South Carolina Upstate,0.33
+320,Wilson College,0.33
+321,Eastern Kentucky University,0.32
+322,Hampton University,0.32
+323,Portland State University,0.32
+324,University of Miami (Florida),0.32
+325,University of Wisconsin-Milwaukee,0.32
+326,Arkansas State University,0.31
+327,"Fairleigh Dickinson University, Metropolitan Campus",0.31
+328,Georgia State University,0.31
+329,Prairie View A&M University,0.31
+330,Saint Anselm College,0.31
+331,University of Findlay,0.31
+332,University of Massachusetts Lowell,0.31
+333,University of Northern Iowa,0.31
+334,University of Pennsylvania,0.31
+335,Wagner College,0.31
+336,Boston University,0.3
+337,Indiana University Indianapolis,0.3
+338,University of Toledo,0.29
+339,Kansas State University,0.28
+340,Stonehill College,0.28
+341,Tennessee Technological University,0.28
+342,"University of Maryland, Baltimore County",0.28
+343,Austin College,0.27
+344,Georgia Southern University,0.26
+345,Charleston Southern University,0.25
+346,Houston Christian University,0.25
+347,Kennesaw State University,0.25
+348,Northeastern University,0.25
+349,Southern Utah University,0.25
+350,Southern Wesleyan University,0.25
+351,Yale University,0.25
+352,Chicago State University,0.24
+353,Asbury University,0.21
+354,Converse University,0.19
+355,Iona University,0.19
+356,Western Illinois University,0.19
+357,University of Southern Indiana,0.17
+358,Brown University,0.12
+359,Colgate University,0.12
+360,Cornell University,0.12
+361,Delaware State University,0.12
+362,Morningside,0.12
+363,Jackson State University,0.1
+364,North American,0.06
+365,University of West Georgia,0.06

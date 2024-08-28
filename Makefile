@@ -7,7 +7,7 @@ install:
 	python3 -m pip install -r requirements.txt
 
 freeze:
-	pip freeze > requirements.txt
+	python3 -m pip freeze > requirements.txt
 
 clean:
 	find . -name "*.csv" -type f -delete
