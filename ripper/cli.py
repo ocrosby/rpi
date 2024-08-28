@@ -1,6 +1,6 @@
 import os
 import csv
-from datetime import datetime
+import sys
 
 import click
 import requests
@@ -65,6 +65,7 @@ def post_gist(file_path, description, public, token):
     else:
         click.echo('Failed to create Gist')
         click.echo(response.json())
+        sys.exit(1)
 
 
 @cli.command('elo')
