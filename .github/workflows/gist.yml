@@ -38,6 +38,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        ripper post --description="Matches" --public=false --token=${{ secrets.GITHUB_TOKEN }} matches.csv
-        ripper post --description="RPI Ratings" --public=false --token=${{ secrets.GITHUB_TOKEN }} rpi.csv
-        ripper post --description="Elo Ratings" --public=false --token=${{ secrets.GITHUB_TOKEN }} elo.csv
+        ripper post --description="Matches" --public --token=${{ secrets.GITHUB_TOKEN }} matches.csv
+        ripper post --description="RPI Ratings" --public --token=${{ secrets.GITHUB_TOKEN }} rpi.csv
+        ripper post --description="Elo Ratings" --public --token=${{ secrets.GITHUB_TOKEN }} elo.csv
