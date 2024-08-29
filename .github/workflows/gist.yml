@@ -37,6 +37,7 @@ jobs:
         ripper matches -o matches.csv
         ripper rpi -o rpi.csv
         ripper elo --output=elo.csv
+        ripper record --output=record.csv
 
     - name: Verify GitHub token permissions
       run: |
