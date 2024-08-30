@@ -48,7 +48,7 @@ jobs:
 
     - name: Run Python script to generate and post Gist
       run: |
-        ripper post --description="Matches" --public --token=${{ secrets.GIST_PAT }} matches.csv
-        ripper post --description="RPI Ratings" --public --token=${{ secrets.GIST_PAT }} rpi.csv
-        ripper post --description="Elo Ratings" --public --token=${{ secrets.GIST_PAT }} elo.csv
-        ripper post --description="Record" --public --token=${{ secrets.GIST_PAT }} record.csv
+        ripper post -d "Matches" --public --token ${{ secrets.GIST_PAT }} matches.csv
+        ripper post -d "RPI Ratings" --public --token ${{ secrets.GIST_PAT }} rpi.csv
+        ripper post -d "Elo Ratings" --public --token ${{ secrets.GIST_PAT }} elo.csv
+        ripper post -d "Record" --public --token ${{ secrets.GIST_PAT }} record.csv
