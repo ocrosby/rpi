@@ -35,10 +35,10 @@ jobs:
     - name: Generate Data
       run: |
         make clean
-        ripper matches -o matches.csv
-        ripper rpi -o rpi.csv
-        ripper elo -o elo.csv
-        ripper record -o record.csv                
+        ripper matches -s ncaa -o matches.csv
+        ripper rpi -s ncaa -i matches.csv -o rpi.csv
+        ripper elo -s ncaa -i matches.csv -o elo.csv
+        ripper record -s ncaa -i matches.csv -o record.csv                
         ripper matches -s nwsl -o nwsl_matches.csv
         ripper rpi -s nwsl -i nwsl_matches.csv -o nwsl_rpi.csv
         ripper elo -s nwsl -i nwsl_matches.csv -o nwsl_elo.csv
