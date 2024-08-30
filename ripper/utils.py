@@ -3,6 +3,7 @@ This module contains utility functions that are used in the project.
 """
 import csv
 
+from datetime import datetime
 from typing import Optional
 
 from ripper.models.match import Match
@@ -71,6 +72,16 @@ def list_team_names(matches: list[Match]) -> list[str]:
 
     return team_names_list
 
+
+def get_start_date_and_time(utc_date_str: str) -> tuple[str, str]:
+    # Parse the UTC date string
+    dt = datetime.strptime(utc_date_str, '%Y-%m-%dT%H:%M:%SZ')
+
+    # Extract and format the date and time
+    start_date = dt.strftime('%Y-%m-%d')
+    start_time = dt.strftime('%H:%M:%S')
+
+    return start_date, start_time
 
 def save_matches_to_csv(filename: str, matches: list[Match], state: Optional[str] = None):
     """

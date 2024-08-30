@@ -10,8 +10,11 @@ import ripper.services.ncaa as ncaa_service
 from ripper.models.match import Match
 from ripper.utils import save_matches_to_csv
 from ripper.elo import process_matches_with_elo
+from ripper.indices.spi import SPIIndex
 from ripper.indices.rpi import RPIIndex
 from ripper.indices.record import RecordIndex
+
+from ripper.services.nwsl import DataSource as NWSLDataSource
 
 
 def common_options(func):
@@ -115,7 +118,8 @@ def post_gist(file_path, description, public, token):
 
 @cli.command('record')
 @common_options
-def record(source, output, start_date):
+@click.option('-i', '--input', type=click.Path(), default=None, help='Input file for the matches (defaults to None)')
+def record(source, output, start_date, input):
     """
     Calculate records for each team.
     """
@@ -124,8 +128,8 @@ def record(source, output, start_date):
             start_date = ncaa_service.SEASON_START_DATE
 
         # Check to see if the matches.csv file exists, if it does, use that instead of the API
-        if os.path.exists('matches.csv'):
-            with open('matches.csv', mode='r', newline='', encoding='utf-8') as file:
+        if input and os.path.exists(input):
+            with open(input, mode='r', newline='', encoding='utf-8') as file:
                 reader = csv.reader(file)
                 next(reader)
                 my_matches = [Match(*row) for row in reader]
@@ -133,7 +137,33 @@ def record(source, output, start_date):
             my_matches: list[Match] = ncaa_service.get_matches_from(start_date, state='final')
 
             # Save the matches to a CSV file
-            save_matches_to_csv('matches.csv', my_matches, 'final')
+            save_matches_to_csv(input, my_matches, 'final')
+
+        # Calculate the record
+        record_index = RecordIndex()
+        results = record_index.calculate(my_matches)
+
+        if output:
+            with open(output, mode='w', newline='', encoding='utf-8') as file:
+                writer = csv.writer(file)
+                writer.writerow(['Rank', 'Team', 'Record'])
+                for rank, team, record in results:
+                    writer.writerow([rank, team, record])
+        else:
+            for rank, team, record in results:
+                click.echo(f"#{rank} Team: '{team}', Record: {record}")
+    elif source == 'nwsl':
+        # Check to see if the matches.csv file exists, if it does, use that instead of the API
+        if input and os.path.exists(input):
+            with open(input, mode='r', newline='', encoding='utf-8') as file:
+                reader = csv.reader(file)
+                next(reader)
+                my_matches = [Match(*row) for row in reader]
+        else:
+            my_matches: list[Match] = NWSLDataSource().get_matches()
+
+            # Save the matches to a CSV file
+            save_matches_to_csv(input, my_matches, 'final')
 
         # Calculate the record
         record_index = RecordIndex()
@@ -155,7 +185,8 @@ def record(source, output, start_date):
 
 @cli.command('elo')
 @common_options
-def elo(source, output, start_date):
+@click.option('-i', '--input', type=click.Path(), default=None, help='Input file for the matches (defaults to None)')
+def elo(source, output, start_date, input):
     """
     Calculate ratings based on the Elo rating system.
     """
@@ -164,8 +195,8 @@ def elo(source, output, start_date):
             start_date = ncaa_service.SEASON_START_DATE
 
         # Check to see if the matches.csv file exists, if it does, use that instead of the API
-        if os.path.exists('matches.csv'):
-            with open('matches.csv', mode='r', newline='', encoding='utf-8') as file:
+        if input and os.path.exists(input):
+            with open(input, mode='r', newline='', encoding='utf-8') as file:
                 reader = csv.reader(file)
                 next(reader)
                 my_matches = [Match(*row) for row in reader]
@@ -173,10 +204,26 @@ def elo(source, output, start_date):
             my_matches: list[Match] = ncaa_service.get_matches_from(start_date, state='final')
 
             # Save the matches to a CSV file
-            save_matches_to_csv('matches.csv', my_matches, 'final')
+            save_matches_to_csv(input, my_matches, 'final')
 
         # Calculate the Elo ratings
         results = process_matches_with_elo(my_matches)
+    elif source == 'nwsl':
+        # Check to see if the matches.csv file exists, if it does, use that instead of the API
+        if input and os.path.exists(input):
+            with open(input, mode='r', newline='', encoding='utf-8') as file:
+                reader = csv.reader(file)
+                next(reader)
+                my_matches = [Match(*row) for row in reader]
+        else:
+            my_matches: list[Match] = NWSLDataSource().get_matches()
+
+            # Save the matches to a CSV file
+            save_matches_to_csv(input, my_matches, 'final')
+
+        # Calculate the Elo ratings
+        results = process_matches_with_elo(my_matches)
+
     else:
         raise NotImplementedError(f"The {source} data source is not implemented yet")
 
@@ -195,32 +242,33 @@ def elo(source, output, start_date):
         for index, (team, rating) in enumerate(sorted_results, start=1):
             click.echo(f"#{index} Team: '{team}', Rating: {rating}")
 
-
-@cli.command('rpi')
+@cli.command('spi')
 @common_options
-def rpi(source, output, start_date):
+@click.option('-v', '--division', default='DI', help='Division of the matches')
+@click.option('-i', '--input', type=click.Path(), default=None, help='Input file for the matches (defaults to None)')
+def spi(source, output, start_date, division, input):
     """
-    Calculate ratings based on the RPI rating system.
+    Calculate ratings based on the SPI rating system.
     """
     if source == 'ncaa':
         if not start_date:
             start_date = ncaa_service.SEASON_START_DATE
 
         # Check to see if the matches.csv file exists, if it does, use that instead of the API
-        if os.path.exists('matches.csv'):
-            with open('matches.csv', mode='r', newline='', encoding='utf-8') as file:
+        if input and os.path.exists(input):
+            with open(input, mode='r', newline='', encoding='utf-8') as file:
                 reader = csv.reader(file)
-                next(reader)  # Skip the header row
+                next(reader)
                 my_matches = [Match(*row) for row in reader]
         else:
-            my_matches: list[Match] = ncaa_service.get_matches_from(start_date, state='final')
+            my_matches: list[Match] = ncaa_service.get_matches_from(start_date, state='final', division=division)
 
             # Save the matches to a CSV file
-            save_matches_to_csv('matches.csv', my_matches, 'final')
+            save_matches_to_csv(input, my_matches, 'final')
 
         # Calculate the RPI index
-        rpi_index = RPIIndex(2)
-        results = rpi_index.calculate(my_matches)
+        spi_index = SPIIndex(2)
+        results = spi_index.calculate(my_matches)
 
         if output:
             with open(output, mode='w', newline='', encoding='utf-8') as file:
@@ -235,10 +283,77 @@ def rpi(source, output, start_date):
     else:
         raise NotImplementedError(f"The {source} data source is not implemented yet")
 
+@cli.command('rpi')
+@common_options
+@click.option('-v', '--division', default='DI', help='Division of the matches')
+@click.option('-i', '--input', type=click.Path(), default=None, help='Input file for the matches (defaults to None)')
+def rpi(source, output, start_date, division, input):
+    """
+    Calculate ratings based on the RPI rating system.
+    """
+    if source == 'ncaa':
+        if not start_date:
+            start_date = ncaa_service.SEASON_START_DATE
+
+        # Check to see if the matches.csv file exists, if it does, use that instead of the API
+        if input and os.path.exists(input):
+            with open(input, mode='r', newline='', encoding='utf-8') as file:
+                reader = csv.reader(file)
+                next(reader)  # Skip the header row
+                my_matches = [Match(*row) for row in reader]
+        else:
+            my_matches: list[Match] = ncaa_service.get_matches_from(start_date, state='final', division=division)
+
+            # Save the matches to a CSV file
+            save_matches_to_csv(input, my_matches, 'final')
+
+        # Calculate the RPI index
+        rpi_index = RPIIndex(2)
+        results = rpi_index.calculate(my_matches)
+
+        if output:
+            with open(output, mode='w', newline='', encoding='utf-8') as file:
+                writer = csv.writer(file)
+                writer.writerow(['Rank', 'Team', 'RPI'])
+                for rank, team, rpi in results:
+                    writer.writerow([rank, team, rpi])
+        else:
+            for rank, team, rating in results:
+                click.echo(f"#{rank} Team: '{team}', RPI: {rating}")
+    elif source == 'nwsl':
+        # Check to see if the matches.csv file exists, if it does, use that instead of the API
+        if input and os.path.exists(input):
+            with open(input, mode='r', newline='', encoding='utf-8') as file:
+                reader = csv.reader(file)
+                next(reader)  # Skip the header row
+                my_matches = [Match(*row) for row in reader]
+        else:
+            my_matches: list[Match] = NWSLDataSource().get_matches()
+
+            # Save the matches to a CSV file
+            save_matches_to_csv(input, my_matches, 'final')
+
+        # Calculate the RPI index
+        rpi_index = RPIIndex(2)
+        results = rpi_index.calculate(my_matches)
+
+        if output:
+            with open(output, mode='w', newline='', encoding='utf-8') as file:
+                writer = csv.writer(file)
+                writer.writerow(['Rank', 'Team', 'RPI'])
+                for rank, team, rpi in results:
+                    writer.writerow([rank, team, rpi])
+        else:
+            for rank, team, rating in results:
+                click.echo(f"#{rank} Team: '{team}', RPI: {rating}")
+    else:
+        raise NotImplementedError(f"The {source} data source is not implemented yet")
+
 @cli.command('matches')
 @click.option('-t', '--state', type=click.Choice(['final', 'live', 'pre']), default=None, help='State of the matches (final, live, pre), defaults to final', required=False)
+@click.option('-v', '--division', default='DI', help='Division of the matches')
 @common_options
-def matches(source, state, output, start_date):
+def matches(source, state, output, start_date, division):
     """
     Get the matches from the specified date until today.
 
@@ -251,7 +366,9 @@ def matches(source, state, output, start_date):
         if not start_date:
             start_date = ncaa_service.SEASON_START_DATE
 
-        my_matches: list[Match] = ncaa_service.get_matches_from(start_date, state=state)
+        my_matches: list[Match] = ncaa_service.get_matches_from(start_date, state=state, division=division)
+    elif source == 'nwsl':
+        my_matches: list[Match] = NWSLDataSource().get_matches()
     else:
         raise NotImplementedError(f"The {source} data source is not implemented yet")
 

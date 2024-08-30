@@ -39,16 +39,20 @@ jobs:
         ripper rpi -o rpi.csv
         ripper elo -o elo.csv
         ripper record -o record.csv
-
-    - name: Verify GitHub token permissions
-      run: |
-        echo "Checking GitHub token permissions..."
-        curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/user
-        curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/gists
+                
+        ripper matches -s nwsl -o nwsl_matches.csv
+        ripper rpi -s nwsl -i nwsl_matches.csv -o nwsl_rpi.csv
+        ripper elo -s nwsl -i nwsl_matches.csv -o nwsl_elo.csv
+        ripper record -s nwsl -i nwsl_matches.csv -o nwsl_record.csv
 
     - name: Run Python script to generate and post Gist
       run: |
         ripper post -d "Matches" --public --token ${{ secrets.GIST_PAT }} matches.csv
-        ripper post -d "RPI Ratings" --public --token ${{ secrets.GIST_PAT }} rpi.csv
-        ripper post -d "Elo Ratings" --public --token ${{ secrets.GIST_PAT }} elo.csv
-        ripper post -d "Record" --public --token ${{ secrets.GIST_PAT }} record.csv
+        ripper post -d "RPI Ratings" --public --token ${{ secrets.GIST_PAT }} --input matches.csv rpi.csv
+        ripper post -d "Elo Ratings" --public --token ${{ secrets.GIST_PAT }} --input matches.csv elo.csv
+        ripper post -d "Record" --public --token ${{ secrets.GIST_PAT }} --input matches.csv record.csv
+        
+        ripper post -d "NWSL Matches" --public --token ${{ secrets.GIST_PAT }} nwsl_matches.csv
+        ripper post -d "NWSL RPI Ratings" --public --token ${{ secrets.GIST_PAT }} nwsl_rpi.csv
+        ripper post -d "NWSL Elo Ratings" --public --token ${{ secrets.GIST_PAT }} nwsl_elo.csv
+        ripper post -d "NWSL Record" --public --token ${{ secrets.GIST_PAT }} nwsl_record.csv

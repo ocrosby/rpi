@@ -11,7 +11,7 @@ from ripper.models.match import Match
 
 SEASON_START_DATE = datetime(2024, 8, 14)
 
-def generate_url(target_date: datetime) -> str:
+def generate_url(target_date: datetime, division: Optional[str] = 'DI') -> str:
     """
     Generate a URL for the specified date
 
@@ -22,7 +22,12 @@ def generate_url(target_date: datetime) -> str:
     month = target_date.month
     day = target_date.day
 
-    return f"https://data.ncaa.com/casablanca/scoreboard/soccer-women/d1/{year}/{month:02}/{day:02}/scoreboard.json"
+    if division == 'DI':
+        return f"https://data.ncaa.com/casablanca/scoreboard/soccer-women/d1/{year}/{month:02}/{day:02}/scoreboard.json"
+    elif division == 'DII':
+        return f"https://data.ncaa.com/casablanca/scoreboard/soccer-women/d2/{year}/{month:02}/{day:02}/scoreboard.json"
+    else:
+        raise ValueError(f"Invalid division: {division}")
 
 
 def generate_date_tuples(year: int, month: int, day: int) -> list[tuple]:
@@ -67,7 +72,7 @@ def get_match_from_game(game: dict) -> Match:
     )
 
 
-def get_matches_on(target_date: datetime, state: Optional[str] = None) -> list[Match]:
+def get_matches_on(target_date: datetime, state: Optional[str] = None, division: Optional[str] = 'DI') -> list[Match]:
     """
     Get matches from the specified start_date of the specified state
 
@@ -76,7 +81,7 @@ def get_matches_on(target_date: datetime, state: Optional[str] = None) -> list[M
     :return:
     """
     # Generate a URL for the specified date
-    url = generate_url(target_date)
+    url = generate_url(target_date, division)
     response = requests.get(url)
     json_data = response.json()
 
@@ -91,7 +96,7 @@ def get_matches_on(target_date: datetime, state: Optional[str] = None) -> list[M
     return response_matches
 
 
-def get_matches_from(from_date: datetime, state: Optional[str] = None) -> list[Match]:
+def get_matches_from(from_date: datetime, state: Optional[str] = None, division: Optional[str] = 'DI') -> list[Match]:
     """
     Get matches from the specified from_date to the current date
 
@@ -103,7 +108,7 @@ def get_matches_from(from_date: datetime, state: Optional[str] = None) -> list[M
     response_matches = []
 
     for date_tuple in date_tuples:
-        response_matches.extend(get_matches_on(datetime(*date_tuple), state))
+        response_matches.extend(get_matches_on(datetime(*date_tuple), state, division))
 
     return response_matches
 
