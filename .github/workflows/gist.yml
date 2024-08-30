@@ -38,8 +38,7 @@ jobs:
         ripper matches -o matches.csv
         ripper rpi -o rpi.csv
         ripper elo -o elo.csv
-        ripper record -o record.csv
-                
+        ripper record -o record.csv                
         ripper matches -s nwsl -o nwsl_matches.csv
         ripper rpi -s nwsl -i nwsl_matches.csv -o nwsl_rpi.csv
         ripper elo -s nwsl -i nwsl_matches.csv -o nwsl_elo.csv
@@ -50,8 +49,7 @@ jobs:
         ripper post -d "Matches" --public --token ${{ secrets.GIST_PAT }} matches.csv
         ripper post -d "RPI Ratings" --public --token ${{ secrets.GIST_PAT }} --input matches.csv rpi.csv
         ripper post -d "Elo Ratings" --public --token ${{ secrets.GIST_PAT }} --input matches.csv elo.csv
-        ripper post -d "Record" --public --token ${{ secrets.GIST_PAT }} --input matches.csv record.csv
-        
+        ripper post -d "Record" --public --token ${{ secrets.GIST_PAT }} --input matches.csv record.csv        
         ripper post -d "NWSL Matches" --public --token ${{ secrets.GIST_PAT }} nwsl_matches.csv
         ripper post -d "NWSL RPI Ratings" --public --token ${{ secrets.GIST_PAT }} nwsl_rpi.csv
         ripper post -d "NWSL Elo Ratings" --public --token ${{ secrets.GIST_PAT }} nwsl_elo.csv
