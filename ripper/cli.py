@@ -118,8 +118,8 @@ def post_gist(file_path, description, public, token):
 
 @cli.command('record')
 @common_options
-@click.option('-i', '--input', type=click.Path(), default=None, help='Input file for the matches (defaults to None)')
-def record(source, output, start_date, input):
+@click.option('-i', '--input', 'input_file', type=click.Path(), default=None, help='Input file for the matches (defaults to None)')
+def record(source, output, start_date, input_file):
     """
     Calculate records for each team.
     """
@@ -128,8 +128,8 @@ def record(source, output, start_date, input):
             start_date = ncaa_service.SEASON_START_DATE
 
         # Check to see if the matches.csv file exists, if it does, use that instead of the API
-        if input and os.path.exists(input):
-            with open(input, mode='r', newline='', encoding='utf-8') as file:
+        if input_file and os.path.exists(input_file):
+            with open(input_file, mode='r', newline='', encoding='utf-8') as file:
                 reader = csv.reader(file)
                 next(reader)
                 my_matches = [Match(*row) for row in reader]
@@ -137,7 +137,7 @@ def record(source, output, start_date, input):
             my_matches: list[Match] = ncaa_service.get_matches_from(start_date, state='final')
 
             # Save the matches to a CSV file
-            save_matches_to_csv(input, my_matches, 'final')
+            save_matches_to_csv(input_file, my_matches, 'final')
 
         # Calculate the record
         record_index = RecordIndex()
@@ -154,8 +154,8 @@ def record(source, output, start_date, input):
                 click.echo(f"#{rank} Team: '{team}', Record: {record}")
     elif source == 'nwsl':
         # Check to see if the matches.csv file exists, if it does, use that instead of the API
-        if input and os.path.exists(input):
-            with open(input, mode='r', newline='', encoding='utf-8') as file:
+        if input_file and os.path.exists(input_file):
+            with open(input_file, mode='r', newline='', encoding='utf-8') as file:
                 reader = csv.reader(file)
                 next(reader)
                 my_matches = [Match(*row) for row in reader]
@@ -163,7 +163,7 @@ def record(source, output, start_date, input):
             my_matches: list[Match] = NWSLDataSource().get_matches()
 
             # Save the matches to a CSV file
-            save_matches_to_csv(input, my_matches, 'final')
+            save_matches_to_csv(input_file, my_matches, 'final')
 
         # Calculate the record
         record_index = RecordIndex()
@@ -185,8 +185,8 @@ def record(source, output, start_date, input):
 
 @cli.command('elo')
 @common_options
-@click.option('-i', '--input', type=click.Path(), default=None, help='Input file for the matches (defaults to None)')
-def elo(source, output, start_date, input):
+@click.option('-i', '--input', 'input_file', type=click.Path(), default=None, help='Input file for the matches (defaults to None)')
+def elo(source, output, start_date, input_file):
     """
     Calculate ratings based on the Elo rating system.
     """
@@ -195,8 +195,8 @@ def elo(source, output, start_date, input):
             start_date = ncaa_service.SEASON_START_DATE
 
         # Check to see if the matches.csv file exists, if it does, use that instead of the API
-        if input and os.path.exists(input):
-            with open(input, mode='r', newline='', encoding='utf-8') as file:
+        if input_file and os.path.exists(input_file):
+            with open(input_file, mode='r', newline='', encoding='utf-8') as file:
                 reader = csv.reader(file)
                 next(reader)
                 my_matches = [Match(*row) for row in reader]
@@ -204,14 +204,14 @@ def elo(source, output, start_date, input):
             my_matches: list[Match] = ncaa_service.get_matches_from(start_date, state='final')
 
             # Save the matches to a CSV file
-            save_matches_to_csv(input, my_matches, 'final')
+            save_matches_to_csv(input_file, my_matches, 'final')
 
         # Calculate the Elo ratings
         results = process_matches_with_elo(my_matches)
     elif source == 'nwsl':
         # Check to see if the matches.csv file exists, if it does, use that instead of the API
-        if input and os.path.exists(input):
-            with open(input, mode='r', newline='', encoding='utf-8') as file:
+        if input_file and os.path.exists(input_file):
+            with open(input_file, mode='r', newline='', encoding='utf-8') as file:
                 reader = csv.reader(file)
                 next(reader)
                 my_matches = [Match(*row) for row in reader]
@@ -219,7 +219,7 @@ def elo(source, output, start_date, input):
             my_matches: list[Match] = NWSLDataSource().get_matches()
 
             # Save the matches to a CSV file
-            save_matches_to_csv(input, my_matches, 'final')
+            save_matches_to_csv(input_file, my_matches, 'final')
 
         # Calculate the Elo ratings
         results = process_matches_with_elo(my_matches)
@@ -245,8 +245,8 @@ def elo(source, output, start_date, input):
 @cli.command('spi')
 @common_options
 @click.option('-v', '--division', default='DI', help='Division of the matches')
-@click.option('-i', '--input', type=click.Path(), default=None, help='Input file for the matches (defaults to None)')
-def spi(source, output, start_date, division, input):
+@click.option('-i', '--input', 'input_file', type=click.Path(), default=None, help='Input file for the matches (defaults to None)')
+def spi(source, output, start_date, division, input_file):
     """
     Calculate ratings based on the SPI rating system.
     """
@@ -255,8 +255,8 @@ def spi(source, output, start_date, division, input):
             start_date = ncaa_service.SEASON_START_DATE
 
         # Check to see if the matches.csv file exists, if it does, use that instead of the API
-        if input and os.path.exists(input):
-            with open(input, mode='r', newline='', encoding='utf-8') as file:
+        if input_file and os.path.exists(input_file):
+            with open(input_file, mode='r', newline='', encoding='utf-8') as file:
                 reader = csv.reader(file)
                 next(reader)
                 my_matches = [Match(*row) for row in reader]
@@ -264,7 +264,7 @@ def spi(source, output, start_date, division, input):
             my_matches: list[Match] = ncaa_service.get_matches_from(start_date, state='final', division=division)
 
             # Save the matches to a CSV file
-            save_matches_to_csv(input, my_matches, 'final')
+            save_matches_to_csv(input_file, my_matches, 'final')
 
         # Calculate the RPI index
         spi_index = SPIIndex(2)
@@ -286,8 +286,8 @@ def spi(source, output, start_date, division, input):
 @cli.command('rpi')
 @common_options
 @click.option('-v', '--division', default='DI', help='Division of the matches')
-@click.option('-i', '--input', type=click.Path(), default=None, help='Input file for the matches (defaults to None)')
-def rpi(source, output, start_date, division, input):
+@click.option('-i', '--input', 'input_file', type=click.Path(), default=None, help='Input file for the matches (defaults to None)')
+def rpi(source, output, start_date, division, input_file):
     """
     Calculate ratings based on the RPI rating system.
     """
@@ -296,8 +296,8 @@ def rpi(source, output, start_date, division, input):
             start_date = ncaa_service.SEASON_START_DATE
 
         # Check to see if the matches.csv file exists, if it does, use that instead of the API
-        if input and os.path.exists(input):
-            with open(input, mode='r', newline='', encoding='utf-8') as file:
+        if input_file and os.path.exists(input_file):
+            with open(input_file, mode='r', newline='', encoding='utf-8') as file:
                 reader = csv.reader(file)
                 next(reader)  # Skip the header row
                 my_matches = [Match(*row) for row in reader]
@@ -305,7 +305,7 @@ def rpi(source, output, start_date, division, input):
             my_matches: list[Match] = ncaa_service.get_matches_from(start_date, state='final', division=division)
 
             # Save the matches to a CSV file
-            save_matches_to_csv(input, my_matches, 'final')
+            save_matches_to_csv(input_file, my_matches, 'final')
 
         # Calculate the RPI index
         rpi_index = RPIIndex(2)
@@ -322,8 +322,8 @@ def rpi(source, output, start_date, division, input):
                 click.echo(f"#{rank} Team: '{team}', RPI: {rating}")
     elif source == 'nwsl':
         # Check to see if the matches.csv file exists, if it does, use that instead of the API
-        if input and os.path.exists(input):
-            with open(input, mode='r', newline='', encoding='utf-8') as file:
+        if input_file and os.path.exists(input_file):
+            with open(input_file, mode='r', newline='', encoding='utf-8') as file:
                 reader = csv.reader(file)
                 next(reader)  # Skip the header row
                 my_matches = [Match(*row) for row in reader]
@@ -331,7 +331,7 @@ def rpi(source, output, start_date, division, input):
             my_matches: list[Match] = NWSLDataSource().get_matches()
 
             # Save the matches to a CSV file
-            save_matches_to_csv(input, my_matches, 'final')
+            save_matches_to_csv(input_file, my_matches, 'final')
 
         # Calculate the RPI index
         rpi_index = RPIIndex(2)
