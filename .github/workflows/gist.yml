@@ -37,8 +37,8 @@ jobs:
         make clean
         ripper matches -o matches.csv
         ripper rpi -o rpi.csv
-        ripper elo --output=elo.csv
-        ripper record --output=record.csv
+        ripper elo -o elo.csv
+        ripper record -o record.csv
 
     - name: Verify GitHub token permissions
       run: |
