@@ -24,7 +24,6 @@ pytz==2024.1
 ranking-metrics==0.1.1
 rapidfuzz==3.9.6
 requests==2.32.3
--e git+https://github.com/ocrosby/rpi.git@eace625ef86e5792eab2e6e7694e4061d07cf6dc#egg=ripper
 scikit-learn==1.5.1
 scipy==1.14.1
 setuptools==73.0.1
