@@ -1,6 +1,8 @@
 certifi==2024.7.4
+cffi==1.17.0
 charset-normalizer==3.3.2
 click==8.1.7
+cryptography==43.0.0
 editdistance==0.8.1
 idna==3.7
 iniconfig==2.0.0
@@ -9,7 +11,12 @@ Levenshtein==0.25.1
 numpy==2.1.0
 packaging==24.1
 pandas==2.2.2
+pdfminer.six==20231228
+pdfplumber==0.11.4
+pillow==10.4.0
 pluggy==1.5.0
+pycparser==2.22
+pypdfium2==4.30.0
 pytest==8.3.2
 python-dateutil==2.9.0.post0
 python-Levenshtein==0.25.1
@@ -17,7 +24,7 @@ pytz==2024.1
 ranking-metrics==0.1.1
 rapidfuzz==3.9.6
 requests==2.32.3
--e git+https://github.com/ocrosby/rpi.git@0a5e284a939e49c886f5dfbe70d862f08dfbf930#egg=ripper
+-e git+https://github.com/ocrosby/rpi.git@eace625ef86e5792eab2e6e7694e4061d07cf6dc#egg=ripper
 scikit-learn==1.5.1
 scipy==1.14.1
 setuptools==73.0.1

@@ -13,6 +13,7 @@ from ripper.elo import process_matches_with_elo
 from ripper.indices.spi import SPIIndex
 from ripper.indices.rpi import RPIIndex
 from ripper.indices.record import RecordIndex
+from ripper.indices.colley_matrix import ColleyMatrixIndex
 
 from ripper.services.nwsl import DataSource as NWSLDataSource
 
@@ -283,6 +284,57 @@ def spi(source, output, start_date, division, input_file):
     else:
         raise NotImplementedError(f"The {source} data source is not implemented yet")
 
+
+@cli.command('colley')
+@common_options
+@click.option('-i', '--input', 'input_file', type=click.Path(), default=None, help='Input file for the matches (defaults to None)')
+def colley(source, output, start_date, input_file):
+    """
+    Calculate ratings based on the Colley Matrix algorithm.
+    """
+    if source == 'ncaa':
+        if not start_date:
+            start_date = ncaa_service.SEASON_START_DATE
+
+        if input_file and os.path.exists(input_file):
+            with open(input_file, mode='r', newline='', encoding='utf-8') as file:
+                reader = csv.reader(file)
+                next(reader)
+                my_matches = [Match(*row) for row in reader]
+        else:
+            my_matches: list[Match] = ncaa_service.get_matches_from(start_date, state='final')
+
+            save_matches_to_csv(input_file, my_matches, 'final')
+
+        results = ColleyMatrixIndex().calculate(my_matches)
+    elif source == 'nwsl':
+        if input_file and os.path.exists(input_file):
+            with open(input_file, mode='r', newline='', encoding='utf-8') as file:
+                reader = csv.reader(file)
+                next(reader)
+                my_matches = [Match(*row) for row in reader]
+        else:
+            my_matches: list[Match] = NWSLDataSource().get_matches()
+
+            save_matches_to_csv(input_file, my_matches, 'final')
+
+        results = ColleyMatrixIndex().calculate(my_matches)
+    else:
+        raise NotImplementedError(f"The {source} data source is not implemented yet")
+
+    sorted_results = sorted(results, key=lambda item: item[2], reverse=True)
+
+    if output:
+        with open(output, mode='w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerow(['Rank', 'Team', 'Rating'])
+            for rank, team, rating in sorted_results:
+                writer.writerow([rank, team, rating])
+    else:
+        for rank, team, rating in sorted_results:
+            click.echo(f"#{rank} Team: '{team}', Rating: {rating}")
+
+
 @cli.command('rpi')
 @common_options
 @click.option('-v', '--division', default='DI', help='Division of the matches')
@@ -348,6 +400,10 @@ def rpi(source, output, start_date, division, input_file):
                 click.echo(f"#{rank} Team: '{team}', RPI: {rating}")
     else:
         raise NotImplementedError(f"The {source} data source is not implemented yet")
+
+
+
+
 
 @cli.command('matches')
 @click.option('-t', '--state', type=click.Choice(['final', 'live', 'pre']), default=None, help='State of the matches (final, live, pre), defaults to final', required=False)
