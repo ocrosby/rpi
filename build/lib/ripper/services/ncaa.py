@@ -2,12 +2,17 @@
 This module contains the MatchService class.
 """
 
+import csv
 import time
+import threading
+import concurrent.futures
 
 from datetime import datetime, timedelta, date
 from typing import Optional
 
 import requests
+
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
 from ripper.models.scoreboard import RootModel, Game, GameWrapper
 from ripper.models.match import Match, Team, Score, CrossDivisionMatchException
@@ -24,7 +29,11 @@ from utils import CSVStatisticsWriter
 
 SEASON_START_DATE = datetime(2024, 8, 14)
 
-
+@retry(
+    stop=stop_after_attempt(5),
+    wait=wait_exponential(multiplier=1, min=1, max=10),
+    retry=retry_if_exception_type(requests.exceptions.RequestException)
+)
 def get_ncaa_school_names_by_division(division: str) -> list[str]:
     """
     Get NCAA school names by division
@@ -41,6 +50,8 @@ def get_ncaa_school_names_by_division(division: str) -> list[str]:
         "DIII": f"{prefix}III",
     }
 
+    print(f"Fetching school names by division from {url_map[division]}")
+
     if division is None:
         raise ValueError("Division cannot be None")
 
@@ -55,7 +66,7 @@ def get_ncaa_school_names_by_division(division: str) -> list[str]:
         raise ValueError(f"Invalid division: {division}")
 
     url = url_map[division]
-    response = requests.get(url)
+    response = requests.get(url, timeout=5)
     data = response.json()
     school_names = [school.get("nameOfficial") for school in data]
     sorted_school_names = sorted(school_names)
@@ -225,6 +236,15 @@ class ScoreboardDataRetriever:
 
 
 
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=4, max=30),
+        retry=(
+                retry_if_exception_type(requests.exceptions.HTTPError) |
+                retry_if_exception_type(requests.exceptions.Timeout) |
+                retry_if_exception_type(requests.exceptions.ConnectionError) |
+                retry_if_exception_type(requests.exceptions.RequestException))
+    )
     def fetch(self) -> Optional[RootModel]:
         url = self.build_url()
 
@@ -248,15 +268,6 @@ class ScoreboardDataRetriever:
         except requests.exceptions.HTTPError as http_err:
             print(f"Something went wrong check this URL '{url}'!")
             print(f"HTTP error occurred: {http_err}")
-            raise
-        except requests.exceptions.ConnectionError as conn_err:
-            print(f"Connection error occurred: {conn_err}")
-            raise
-        except requests.exceptions.Timeout as timeout_err:
-            print(f"Timeout error occurred: {timeout_err}")
-            raise
-        except requests.exceptions.RequestException as req_err:
-            print(f"An error occurred: {req_err}")
             raise
         except ValueError as json_err:
             print(f"JSON decoding error: {json_err}")
@@ -374,16 +385,21 @@ def get_matches_from(
     :param state: Optional state
     :return:
     """
+    date_tuples = [datetime(*date_tuple) for date_tuple in DateUntilCurrentIterator(from_date)]
     cumulative_matches = []
+    lock = threading.Lock()
 
-    for date_tuple in DateUntilCurrentIterator(from_date):
-        current_date = datetime(*date_tuple)
-        current_matches = get_matches_on(gender, current_date, state, division)
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        future_to_date = {executor.submit(get_matches_on, gender, date, state, division): date for date in date_tuples}
 
-        if len(current_matches) == 0:
-            continue
-
-        cumulative_matches.extend(current_matches)
+        for future in concurrent.futures.as_completed(future_to_date):
+            try:
+                current_matches = future.result()
+                if current_matches:
+                    with lock:
+                        cumulative_matches.extend(current_matches)
+            except Exception as exc:
+                print(f"An error occurred: {exc}")
 
     return cumulative_matches
 
@@ -406,6 +422,106 @@ def list_conference_names(matches: list[Match]) -> list[str]:
 
     return conference_names_list
 
+def map_team_to_conference(team_name: str, conference_name: str, mapping: dict[str, str]) -> None:
+    """
+    Map a team to a conference
+
+    :param team_name: The name of the team
+    :param conference_name: The name of the conference
+    :param mapping: The mapping of team name to conference name
+    :return: None
+    """
+    if team_name in mapping:
+        return
+
+    mapping[team_name] = conference_name
+
+
+def map_teams_to_conferences(matches: list[Match]) -> dict[str, str]:
+    # Determine a team to conference mapping
+    team_to_conference_mapping = {}
+
+    for match in matches:
+        map_team_to_conference(match.home.name, match.home.conference, team_to_conference_mapping)
+        map_team_to_conference(match.away.name, match.away.conference, team_to_conference_mapping)
+
+    return team_to_conference_mapping
+
+def format_conference_name(conference: str) -> str:
+    """
+    Convert a conference name to lowercase and replace spaces with underscores.
+
+    :param conference: The conference name
+    :return: The formatted conference name
+    """
+    return conference.lower().replace(" ", "_")
+
+def list_teams_in_conference(matches: list[Match], target_conference: str) -> list[str]:
+    """
+    List the teams in a conference
+
+    :param matches: The list of Match containing match data
+    :param conference: The name of the conference
+    :return: The list of teams in the conference
+    """
+
+    team_set = set()
+    for match in matches:
+        if match.home.conference == target_conference:
+            team_set.add(match.home.name)
+
+        if match.away.conference == target_conference:
+            team_set.add(match.away.name)
+
+    team_list = list(team_set)
+    team_list.sort()
+
+    return team_list
+
+def generate_conference_rpi_mapping(matches: list[Match], stats: dict[str, dict[str, float]]) -> dict[str, float]:
+    """
+    Generate a mapping of conference to RPI
+
+    :param matches: The list of Match containing match data
+    :param stats: The dictionary of team statistics
+    :return: The mapping of conference to RPI
+    """
+    conference_names = list_conference_names(matches)
+    team_to_conference_mapping = map_teams_to_conferences(matches)
+
+    # For each conference determine the average RPI of the teams in the conference
+    conference_rpi = {}
+
+    # Given the stats determine the average RPI of the teams in the conference
+    for conference_name in conference_names:
+        conference_team_names = list_teams_in_conference(matches, conference_name)
+
+        sum_so_far = float(0)
+        count = 0
+        for conference_team_name in conference_team_names:
+            conference_team_stats = stats.get(conference_team_name)
+            if conference_team_stats is None:
+                print(f"Statistics not found for {conference_team_name}")
+                continue
+
+            conference_team_rpi = conference_team_stats.get("rpi")
+            if conference_team_rpi is None:
+                print(f"RPI not found for {conference_team_name}")
+                continue
+
+            count += 1
+            sum_so_far += conference_team_rpi
+
+        if count == 0:
+            conference_rpi_average = float(0)
+        else:
+            conference_rpi_average = sum_so_far / float(count)
+
+        conference_rpi[conference_name] = conference_rpi_average
+
+    conference_rpi = dict(sorted(conference_rpi.items(), key=lambda item: item[1], reverse=True))
+
+    return conference_rpi
 
 def process(gender: str):
     current_time = datetime.now()
@@ -440,6 +556,43 @@ def process(gender: str):
     print(f"Elapsed time for {gender} statistics calculation: {elapsed_time:.2f} seconds")
     CSVStatisticsWriter(f"{gender}_statistics.csv").write(stats)
 
+    conference_names = list_conference_names(completed_matches)
+    team_to_conference_mapping = map_teams_to_conferences(completed_matches)
+    conference_rpi = generate_conference_rpi_mapping(completed_matches, stats)
+    generate_gender_conference_rpi_csv_file(gender, conference_rpi)
+    generate_conference_teams_rpi_csv_files(gender, conference_names, stats, team_to_conference_mapping)
+
+
+def generate_conference_teams_rpi_csv_files(gender, conference_names, stats, team_to_conference_mapping):
+    for conference in conference_names:
+        generate_conference_teams_rpi_csv_file(gender, conference, stats, team_to_conference_mapping)
+
+
+def generate_gender_conference_rpi_csv_file(gender, conference_rpi_mapping):
+    with open(f"{gender}_conference_rpi.csv", "w") as file:
+        writer = csv.DictWriter(file, fieldnames=["rank", "conference", "average_rpi"])
+        writer.writeheader()
+        rank = 1
+        for conference in conference_rpi_mapping:
+            average_rpi = round(conference_rpi_mapping[conference], 2)
+            writer.writerow({"rank": rank, "conference": conference, "average_rpi": average_rpi})
+            rank += 1
+
+
+def generate_conference_teams_rpi_csv_file(gender, conference_name, stats, team_to_conference_mapping):
+    conference_teams = [team for team in stats if team_to_conference_mapping[team] == conference_name]
+    conference_rpi = {team: stats[team]["rpi"] for team in conference_teams}
+    sorted_teams = sorted(conference_rpi.items(), key=lambda item: item[1], reverse=True)
+    sorted_teams_rpi = dict(sorted_teams)
+    formatted_conference_name = format_conference_name(conference_name)
+
+    with open(f"{gender}_{formatted_conference_name}_rpi.csv", "w") as file:
+        writer = csv.DictWriter(file, fieldnames=["rank", "team", "rpi"])
+        writer.writeheader()
+        rank = 1
+        for team in sorted_teams_rpi:
+            writer.writerow({"rank": rank, "team": team, "rpi": sorted_teams_rpi[team]})
+            rank += 1
 
 
 if __name__ == "__main__":

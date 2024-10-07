@@ -1,8 +1,10 @@
 """
 This module contains utility functions that are used in the project.
 """
+import concurrent.futures
 import multiprocessing
 import csv
+import threading
 
 from functools import partial
 from datetime import datetime
@@ -338,8 +340,12 @@ def save_matches_to_csv(
             else:
                 print(f"Invalid state: {state}")
 
+calculation_lock = threading.Lock()
 
 def calculate_team_statistics(gender: str, matches: list[Match], team_name: str, precision: int) -> tuple[str, dict]:
+    with calculation_lock:
+        print(f"Calculating statistics for {gender} {team_name}...")
+
     wp_value = wp(gender, matches, team_name, None, precision)
     owp_value = owp(gender, matches, team_name, precision)
     oowp_value = oowp(gender, matches, team_name, precision)
@@ -367,10 +373,20 @@ def calculate_statistics(gender: str, matches: list[Match], precision: int = 2) 
     print(f"Calculating statistics for {len(matches)} matches...")
 
     team_names = list_team_names(matches)
-    num_workers = multiprocessing.cpu_count()
+    results = {}
+    lock = threading.Lock()
 
-    with multiprocessing.Pool(num_workers) as pool:
-        results = pool.map(partial(calculate_team_statistics, gender, matches, precision=precision), team_names)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=len(team_names)) as executor:
+        future_to_team = {executor.submit(calculate_team_statistics, gender, matches, team_name, precision): team_name for team_name in team_names}
+
+        for future in concurrent.futures.as_completed(future_to_team):
+            team_name = future_to_team[future]
+            try:
+                team_name, statistics = future.result()
+                with lock:
+                    results[team_name] = statistics
+            except Exception as exc:
+                print(f"An error occurred while calculating statistics for {team_name}: {exc}")
 
     return dict(results)
 
