@@ -11,6 +11,7 @@ from ripper.models.match import Match
 from ripper.indices.base import BaseIndex
 from ripper.utils import list_team_names
 
+
 class SPIIndex(BaseIndex[float]):
     precision: int
 
@@ -24,7 +25,10 @@ class SPIIndex(BaseIndex[float]):
     5. Sort the List: Sort the list by SPI in descending order and then by team name in ascending order.
     6. Generate Result: Create a list of tuples containing the rank, team name, and SPI.    
     """
-    def calculate(self, matches: List[Match], precision: int = 2) -> List[Tuple[int, str, float]]:
+
+    def calculate(
+        self, matches: List[Match], precision: int = 2
+    ) -> List[Tuple[int, str, float]]:
         self.precision = precision
 
         # Initialize Team SPI

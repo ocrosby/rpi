@@ -7,11 +7,12 @@ from ripper.models.match import Match
 from ripper.indices.base import BaseIndex
 from ripper.utils import list_team_names
 
+
 class Record:
     wins: int
     losses: int
     draws: int
-    
+
     def __init__(self, wins: int, losses: int, draws: int):
         self.wins = wins
         self.losses = losses
@@ -24,16 +25,16 @@ class Record:
         return self.wins * 3 + self.draws
 
 
-
 class RecordIndex(BaseIndex[Tuple[int, int]]):
     """
     Calculate the record for each team
     """
+
     def calculate(self, matches: List[Match]) -> List[Tuple[int, str, str]]:
         # Initialize Team Record
         team_name = list_team_names(matches)
         records = {team_name: Record(0, 0, 0) for team_name in team_name}
-        
+
         # Calculate Team Record
         for match in matches:
             if match.winner() == match.home_team:
@@ -47,7 +48,10 @@ class RecordIndex(BaseIndex[Tuple[int, int]]):
                 records[match.away_team].draws += 1
 
         # Convert to list of tuples
-        result = [(team, record.wins, record.losses, record.draws, record.points()) for team, record in records.items()]
+        result = [
+            (team, record.wins, record.losses, record.draws, record.points())
+            for team, record in records.items()
+        ]
 
         # Sort by record and then by team name
         sorted_result = sorted(result, key=lambda x: (-x[4], x[0]))

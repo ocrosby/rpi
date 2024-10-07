@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import Optional
 from datetime import datetime
 
+
 class GameState(Enum):
     PRE = "pre"
     LIVE = "live"
@@ -19,21 +20,27 @@ class Match:
     start_time: str
     game_state: str
 
-    def __init__(self,
-                 home_team: str,
-                 away_team: str,
-                 home_score: int,
-                 away_score: int,
-                 start_date: Optional[str] = None,
-                 start_time: Optional[str] = None,
-                 game_state: Optional[str] = None):
+    def __init__(
+        self,
+        home_team: str,
+        away_team: str,
+        home_score: int,
+        away_score: int,
+        start_date: Optional[str] = None,
+        start_time: Optional[str] = None,
+        game_state: Optional[str] = None,
+    ):
         self.home_team = home_team
         self.away_team = away_team
         self.home_score = home_score
         self.away_score = away_score
-        self.start_date = start_date if start_date else datetime.now().strftime('%Y-%m-%d')
-        self.start_time = start_time if start_time else datetime.now().strftime('%H:%M:%S')
-        self.game_state = 'final' if not game_state else game_state
+        self.start_date = (
+            start_date if start_date else datetime.now().strftime("%Y-%m-%d")
+        )
+        self.start_time = (
+            start_time if start_time else datetime.now().strftime("%H:%M:%S")
+        )
+        self.game_state = "final" if not game_state else game_state
 
     def __str__(self):
         return f"{self.home_team} vs {self.away_team} - {self.home_score} - {self.away_score} - {self.start_date} - {self.start_time} - '{self.game_state}'"
@@ -80,13 +87,12 @@ class Match:
     def contains(self, team: str) -> bool:
         return team in [self.home_team, self.away_team]
 
-
     @staticmethod
     def load_from_file(filename: str) -> list:
         matches = []
-        with open(filename, 'r') as file:
+        with open(filename, "r") as file:
             for line in file:
-                data = line.strip().split(',')
+                data = line.strip().split(",")
                 match = Match(*data)
                 matches.append(match)
 

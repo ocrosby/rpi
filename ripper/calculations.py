@@ -3,7 +3,9 @@ from typing import Optional
 from ripper.models.match import Match
 
 
-def get_wins_for_team(matches: list[Match], team_name: str, skip_team_name: Optional[str]) -> int:
+def get_wins_for_team(
+    matches: list[Match], team_name: str, skip_team_name: Optional[str]
+) -> int:
     """
     Calculate the number of wins for a specific team
 
@@ -19,7 +21,11 @@ def get_wins_for_team(matches: list[Match], team_name: str, skip_team_name: Opti
         if not match.contains(team_name):
             continue
 
-        if skip_team_name and len(skip_team_name) > 0 and match.contains(skip_team_name):
+        if (
+            skip_team_name
+            and len(skip_team_name) > 0
+            and match.contains(skip_team_name)
+        ):
             continue
 
         if match.winner() == team_name:
@@ -28,7 +34,9 @@ def get_wins_for_team(matches: list[Match], team_name: str, skip_team_name: Opti
     return wins
 
 
-def get_losses_for_team(matches: list[Match], team_name: str, skip_team_name: Optional[str]) -> int:
+def get_losses_for_team(
+    matches: list[Match], team_name: str, skip_team_name: Optional[str]
+) -> int:
     """
     Calculate the number of losses for a specific team
 
@@ -44,7 +52,11 @@ def get_losses_for_team(matches: list[Match], team_name: str, skip_team_name: Op
         if not match.contains(team_name):
             continue
 
-        if skip_team_name and len(skip_team_name) > 0 and match.contains(skip_team_name):
+        if (
+            skip_team_name
+            and len(skip_team_name) > 0
+            and match.contains(skip_team_name)
+        ):
             continue
 
         if match.loser() == team_name:
@@ -53,7 +65,9 @@ def get_losses_for_team(matches: list[Match], team_name: str, skip_team_name: Op
     return losses
 
 
-def get_draws_for_team(matches: list[Match], team_name: str, skip_team_name: Optional[str]) -> int:
+def get_draws_for_team(
+    matches: list[Match], team_name: str, skip_team_name: Optional[str]
+) -> int:
     """
     Calculate the number of draws for a specific team
 
@@ -69,7 +83,11 @@ def get_draws_for_team(matches: list[Match], team_name: str, skip_team_name: Opt
         if not match.contains(team_name):
             continue
 
-        if skip_team_name and len(skip_team_name) > 0 and match.contains(skip_team_name):
+        if (
+            skip_team_name
+            and len(skip_team_name) > 0
+            and match.contains(skip_team_name)
+        ):
             continue
 
         if match.is_draw():
@@ -152,7 +170,12 @@ def get_total_matches_played_by_team(team: str, matches: list[Match]) -> int:
     return len(get_matches_played_by_team(team, matches))
 
 
-def wp(matches: list[Match], target_team_name: str, skip_team_name: Optional[str], ndigits: int = 2) -> float:
+def wp(
+    matches: list[Match],
+    target_team_name: str,
+    skip_team_name: Optional[str],
+    ndigits: int = 2,
+) -> float:
     """
     Calculate the winning percentage for a specific team
 
@@ -167,7 +190,7 @@ def wp(matches: list[Match], target_team_name: str, skip_team_name: Optional[str
     draws = get_draws_for_team(matches, target_team_name, skip_team_name)
     team_total_matches_played = wins + losses + draws
 
-    result = (float(wins)+(float(draws)/2)) / float(team_total_matches_played)
+    result = (float(wins) + (float(draws) / 2)) / float(team_total_matches_played)
     result = round(result, ndigits)
 
     return result
@@ -186,16 +209,24 @@ def owp(matches: list[Match], target_team_name: str, ndigits: int = 2) -> float:
     opponent_winning_percentage_dict = {}
     for opponent_name in opponent_names:
         # compute the wins for this opponent
-        opponent_wins = get_wins_for_team(matches=matches, team_name=opponent_name, skip_team_name=target_team_name)
-        opponent_losses = get_losses_for_team(matches=matches, team_name=opponent_name, skip_team_name=target_team_name)
-        opponent_draws = get_draws_for_team(matches=matches, team_name=opponent_name, skip_team_name=target_team_name)
+        opponent_wins = get_wins_for_team(
+            matches=matches, team_name=opponent_name, skip_team_name=target_team_name
+        )
+        opponent_losses = get_losses_for_team(
+            matches=matches, team_name=opponent_name, skip_team_name=target_team_name
+        )
+        opponent_draws = get_draws_for_team(
+            matches=matches, team_name=opponent_name, skip_team_name=target_team_name
+        )
         total_matches_played = opponent_wins + opponent_losses + opponent_draws
 
         if total_matches_played == 0:
             continue
 
         # compute the winning percentage for this opponent
-        opponent_winning_percentage = (float(opponent_wins)+(float(opponent_draws)/2)) / float(total_matches_played)
+        opponent_winning_percentage = (
+            float(opponent_wins) + (float(opponent_draws) / 2)
+        ) / float(total_matches_played)
 
         opponent_winning_percentage_dict[opponent_name] = opponent_winning_percentage
 
@@ -210,7 +241,7 @@ def owp(matches: list[Match], target_team_name: str, ndigits: int = 2) -> float:
         return float(0)
 
     average = sum_so_far / float(number_of_matches)
-    average =  round(average, ndigits)
+    average = round(average, ndigits)
 
     return average
 
@@ -243,7 +274,9 @@ def oowp(matches: list[Match], target_team_name: str, ndigits: int = 2) -> float
     return round(average, ndigits)
 
 
-def rpi(wp_value: float, owp_value: float, oowp_value: float, ndigits: int = 2) -> float:
+def rpi(
+    wp_value: float, owp_value: float, oowp_value: float, ndigits: int = 2
+) -> float:
     """
     Calculate the RPI value for a team
 

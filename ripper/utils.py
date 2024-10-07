@@ -1,13 +1,23 @@
 """
 This module contains utility functions that are used in the project.
 """
+
 import csv
 
 from datetime import datetime
 from typing import Optional
 
 from ripper.models.match import Match
-from ripper.calculations import get_wins_for_team, get_losses_for_team, get_draws_for_team, wp, owp, oowp, rpi
+from ripper.calculations import (
+    get_wins_for_team,
+    get_losses_for_team,
+    get_draws_for_team,
+    wp,
+    owp,
+    oowp,
+    rpi,
+)
+
 
 def decompose_stats(stats: dict) -> list[tuple[str, dict]]:
     """
@@ -26,7 +36,7 @@ def sort_stats(stats: dict) -> list[tuple[str, dict]]:
     :param stats: The dictionary of statistics by team name.
     :return: List of tuples containing the team name and the statistics
     """
-    return sorted(stats.items(), key=lambda item: (-item[1]['rpi'], item[0]))
+    return sorted(stats.items(), key=lambda item: (-item[1]["rpi"], item[0]))
 
 
 def save_stats_to_csv(filename: str, stats_list: list[tuple[str, dict]]):
@@ -37,21 +47,23 @@ def save_stats_to_csv(filename: str, stats_list: list[tuple[str, dict]]):
     :param stats_list: List of tuples containing the team name and the statistics
     :return:
     """
-    with open(filename, mode='w', newline='') as file:
+    with open(filename, mode="w", newline="") as file:
         writer = csv.writer(file)
-        writer.writerow(['team', 'wins', 'losses', 'draws', 'wp', 'owp', 'oowp', 'rpi'])
+        writer.writerow(["team", "wins", "losses", "draws", "wp", "owp", "oowp", "rpi"])
 
         for current_team_name, current_team_statistics in stats_list:
-            writer.writerow([
-                current_team_name,
-                current_team_statistics["wins"],
-                current_team_statistics["losses"],
-                current_team_statistics["draws"],
-                current_team_statistics["wp"],
-                current_team_statistics["owp"],
-                current_team_statistics["oowp"],
-                current_team_statistics["rpi"]
-            ])
+            writer.writerow(
+                [
+                    current_team_name,
+                    current_team_statistics["wins"],
+                    current_team_statistics["losses"],
+                    current_team_statistics["draws"],
+                    current_team_statistics["wp"],
+                    current_team_statistics["owp"],
+                    current_team_statistics["oowp"],
+                    current_team_statistics["rpi"],
+                ]
+            )
 
 
 def list_team_names(matches: list[Match]) -> list[str]:
@@ -75,15 +87,18 @@ def list_team_names(matches: list[Match]) -> list[str]:
 
 def get_start_date_and_time(utc_date_str: str) -> tuple[str, str]:
     # Parse the UTC date string
-    dt = datetime.strptime(utc_date_str, '%Y-%m-%dT%H:%M:%SZ')
+    dt = datetime.strptime(utc_date_str, "%Y-%m-%dT%H:%M:%SZ")
 
     # Extract and format the date and time
-    start_date = dt.strftime('%Y-%m-%d')
-    start_time = dt.strftime('%H:%M:%S')
+    start_date = dt.strftime("%Y-%m-%d")
+    start_time = dt.strftime("%H:%M:%S")
 
     return start_date, start_time
 
-def save_matches_to_csv(filename: str, matches: list[Match], state: Optional[str] = None):
+
+def save_matches_to_csv(
+    filename: str, matches: list[Match], state: Optional[str] = None
+):
     """
     Save the matches to a CSV file
 
@@ -92,47 +107,63 @@ def save_matches_to_csv(filename: str, matches: list[Match], state: Optional[str
     :param state: The optional state (live, pre, final)
     :return:
     """
-    with open(filename, mode='w', newline='') as file:
+    with open(filename, mode="w", newline="") as file:
         writer = csv.writer(file)
         # Write the header
         if state is None or state == "final":
             writer.writerow(
-                ['home_team', 'away_team', 'home_score', 'away_score', 'start_date'])
+                ["home_team", "away_team", "home_score", "away_score", "start_date"]
+            )
 
             # Write the match data
             for match in matches:
-                writer.writerow([
-                    match.home_team,
-                    match.away_team,
-                    match.home_score,
-                    match.away_score,
-                    match.start_date
-                ])
+                writer.writerow(
+                    [
+                        match.home_team,
+                        match.away_team,
+                        match.home_score,
+                        match.away_score,
+                        match.start_date,
+                    ]
+                )
 
         elif state == "live":
-            writer.writerow(['home_team', 'away_team', 'home_score', 'away_score', 'start_date', 'start_time'])
+            writer.writerow(
+                [
+                    "home_team",
+                    "away_team",
+                    "home_score",
+                    "away_score",
+                    "start_date",
+                    "start_time",
+                ]
+            )
 
             # Write the match data
             for match in matches:
-                writer.writerow([
-                    match.home_team,
-                    match.away_team,
-                    match.home_score,
-                    match.away_score,
-                    match.start_date,
-                    match.start_time
-                ])
+                writer.writerow(
+                    [
+                        match.home_team,
+                        match.away_team,
+                        match.home_score,
+                        match.away_score,
+                        match.start_date,
+                        match.start_time,
+                    ]
+                )
         elif state == "pre":
-            writer.writerow(['home_team', 'away_team', 'start_date', 'start_time'])
+            writer.writerow(["home_team", "away_team", "start_date", "start_time"])
 
             # Write the match data
             for match in matches:
-                writer.writerow([
-                    match.home_team,
-                    match.away_team,
-                    match.start_date,
-                    match.start_time
-                ])
+                writer.writerow(
+                    [
+                        match.home_team,
+                        match.away_team,
+                        match.start_date,
+                        match.start_time,
+                    ]
+                )
         else:
             print(f"Invalid state: {state}")
 
@@ -160,10 +191,11 @@ def calculate_statistics(matches: list[Match], precision: int = 2) -> dict:
             "wp": wp_value,
             "owp": owp_value,
             "oowp": oowp_value,
-            "rpi": rpi(wp_value, owp_value, oowp_value, precision)
+            "rpi": rpi(wp_value, owp_value, oowp_value, precision),
         }
 
     return statistics
+
 
 def find_root_dir():
     """
@@ -172,4 +204,5 @@ def find_root_dir():
     :return: The root directory of the project
     """
     import os
+
     return os.path.dirname(os.path.abspath(__file__))

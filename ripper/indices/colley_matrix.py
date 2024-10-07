@@ -4,10 +4,12 @@ from ripper.models.match import Match
 from ripper.indices.base import BaseIndex
 from ripper.utils import list_team_names
 
+
 class ColleyMatrixIndex(BaseIndex[float]):
     """
     This class calculates the Colley Matrix index for each team.
     """
+
     def calculate(self, matches: List[Match]) -> List[Tuple[int, str, float]]:
         """
         Calculate the Colley Matrix index for each team.
@@ -41,6 +43,8 @@ class ColleyMatrixIndex(BaseIndex[float]):
         team_ratings = {team: round(rating, 2) for team, rating in zip(teams, r)}
 
         sorted_teams = sorted(team_ratings.items(), key=lambda x: (-x[1], x[0]))
-        result = [(i + 1, team, rating) for i, (team, rating) in enumerate(sorted_teams)]
+        result = [
+            (i + 1, team, rating) for i, (team, rating) in enumerate(sorted_teams)
+        ]
 
         return result

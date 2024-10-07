@@ -7,10 +7,12 @@ from ripper.models.match import Match
 from ripper.indices.base import BaseIndex
 from ripper.utils import list_team_names
 
+
 class MatchesPlayedIndex(BaseIndex[int]):
     """
     Calculate the number of matches played for each team
     """
+
     def calculate(self, matches: List[Match]) -> List[Tuple[int, str, int]]:
         """
         Calculate the number of matches played for each team
@@ -24,6 +26,9 @@ class MatchesPlayedIndex(BaseIndex[int]):
             team_matches[match.home_team] += 1
             team_matches[match.away_team] += 1
 
-        result = [(i + 1, team, matches_played) for i, (team, matches_played) in enumerate(team_matches.items())]
+        result = [
+            (i + 1, team, matches_played)
+            for i, (team, matches_played) in enumerate(team_matches.items())
+        ]
 
         return sorted(result, key=lambda x: (-x[2], x[1]))

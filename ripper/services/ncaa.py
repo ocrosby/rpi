@@ -1,12 +1,18 @@
 """
 This module contains the MatchService class.
 """
+
 from datetime import datetime, timedelta
 from typing import Optional
 
 import requests
 
-from ripper.utils import save_matches_to_csv, save_stats_to_csv, calculate_statistics, sort_stats
+from ripper.utils import (
+    save_matches_to_csv,
+    save_stats_to_csv,
+    calculate_statistics,
+    sort_stats,
+)
 from ripper.models.match import Match
 
 SEASON_START_DATE = datetime(2024, 8, 14)
@@ -22,9 +28,9 @@ def get_ncaa_school_names_by_division(division: str) -> list[str]:
     # url = f"https://data.ncaa.com/casablanca/scoreboard/soccer-w"
 
     url_map = {
-        'DI': "https://web3.ncaa.org/directory/api/directory/memberList?type=12&division=I",
-        'DII': "https://web3.ncaa.org/directory/api/directory/memberList?type=12&division=II",
-        'DIII': "https://web3.ncaa.org/directory/api/directory/memberList?type=12&division=III"
+        "DI": "https://web3.ncaa.org/directory/api/directory/memberList?type=12&division=I",
+        "DII": "https://web3.ncaa.org/directory/api/directory/memberList?type=12&division=II",
+        "DIII": "https://web3.ncaa.org/directory/api/directory/memberList?type=12&division=III",
     }
 
     if division is None:
@@ -32,7 +38,7 @@ def get_ncaa_school_names_by_division(division: str) -> list[str]:
 
     division = division.strip()
 
-    if division == '':
+    if division == "":
         raise ValueError("Division cannot be empty")
 
     division = division.upper()
@@ -43,7 +49,7 @@ def get_ncaa_school_names_by_division(division: str) -> list[str]:
     url = url_map[division]
     response = requests.get(url)
     data = response.json()
-    school_names = [school.get('nameOfficial') for school in data]
+    school_names = [school.get("nameOfficial") for school in data]
     sorted_school_names = sorted(school_names)
 
     return sorted_school_names
@@ -55,7 +61,7 @@ def map_ncaa_schools_by_division() -> dict[str, str]:
 
     :return:
     """
-    division_priority = ['DI', 'DII', 'DIII']
+    division_priority = ["DI", "DII", "DIII"]
     mapping = {}
 
     for division in division_priority:
@@ -67,7 +73,7 @@ def map_ncaa_schools_by_division() -> dict[str, str]:
     return mapping
 
 
-def generate_url(target_date: datetime, division: Optional[str] = 'DI') -> str:
+def generate_url(target_date: datetime, division: Optional[str] = "DI") -> str:
     """
     Generate a URL for the specified date
 
@@ -78,9 +84,9 @@ def generate_url(target_date: datetime, division: Optional[str] = 'DI') -> str:
     month = target_date.month
     day = target_date.day
 
-    if division == 'DI':
+    if division == "DI":
         return f"https://data.ncaa.com/casablanca/scoreboard/soccer-women/d1/{year}/{month:02}/{day:02}/scoreboard.json"
-    elif division == 'DII':
+    elif division == "DII":
         return f"https://data.ncaa.com/casablanca/scoreboard/soccer-women/d2/{year}/{month:02}/{day:02}/scoreboard.json"
     else:
         raise ValueError(f"Invalid division: {division}")
@@ -108,6 +114,7 @@ def generate_date_tuples(year: int, month: int, day: int) -> list[tuple]:
 
 school_name_to_division = map_ncaa_schools_by_division()
 
+
 def is_match_cross_division(home_team: str, away_team: str) -> bool:
     """
     Check if a match is cross-division
@@ -120,15 +127,17 @@ def is_match_cross_division(home_team: str, away_team: str) -> bool:
     away_division = school_name_to_division.get(away_team)
 
     if home_division is None:
-        home_division = 'Other'
+        home_division = "Other"
 
     if away_division is None:
-        away_division = 'Other'
+        away_division = "Other"
 
     answer = home_division != away_division
 
     if answer:
-        print(f"Detected Cross-division match: {home_team} ({home_division}) vs {away_team} ({away_division})")
+        print(
+            f"Detected Cross-division match: {home_team} ({home_division}) vs {away_team} ({away_division})"
+        )
 
     return answer
 
@@ -140,7 +149,7 @@ def get_match_from_game(game: dict) -> Optional[Match]:
     :param game: Game dictionary
     :return:
     """
-    game = game.get('game')
+    game = game.get("game")
     home = game.get("home")
     away = game.get("away")
 
@@ -157,11 +166,13 @@ def get_match_from_game(game: dict) -> Optional[Match]:
         away_score=away.get("score", 0),
         start_date=game.get("startDate", None),
         start_time=game.get("startTime", None),
-        game_state=game.get("gameState", None)
+        game_state=game.get("gameState", None),
     )
 
 
-def get_matches_on(target_date: datetime, state: Optional[str] = None, division: Optional[str] = 'DI') -> list[Match]:
+def get_matches_on(
+    target_date: datetime, state: Optional[str] = None, division: Optional[str] = "DI"
+) -> list[Match]:
     """
     Get matches from the specified start_date of the specified state
 
@@ -192,7 +203,9 @@ def get_matches_on(target_date: datetime, state: Optional[str] = None, division:
     return response_matches
 
 
-def get_matches_from(from_date: datetime, state: Optional[str] = None, division: Optional[str] = 'DI') -> list[Match]:
+def get_matches_from(
+    from_date: datetime, state: Optional[str] = None, division: Optional[str] = "DI"
+) -> list[Match]:
     """
     Get matches from the specified from_date to the current date
 

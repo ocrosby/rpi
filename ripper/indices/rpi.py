@@ -15,6 +15,7 @@ class RPIIndex(BaseIndex[float]):
     """
     This class calculates the RPI index for each team.
     """
+
     def __init__(self, precision: int = 2):
         self.precision = precision
 

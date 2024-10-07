@@ -1,6 +1,7 @@
 from ripper.constants import K_FACTOR, INITIAL_RATING
 from ripper.models.match import Match
 
+
 def initialize_ratings(teams: list[str]) -> dict[str, int]:
     """
     Initialize ratings for each team.
@@ -9,6 +10,7 @@ def initialize_ratings(teams: list[str]) -> dict[str, int]:
     :return: Dictionary with team names as keys and their ratings as values
     """
     return {team: INITIAL_RATING for team in teams}
+
 
 def expected_score(rating_a: int, rating_b: int) -> float:
     """
@@ -20,7 +22,10 @@ def expected_score(rating_a: int, rating_b: int) -> float:
     """
     return 1 / (1 + 10 ** ((rating_b - rating_a) / 400))
 
-def update_ratings(rating_a: int, rating_b: int, score_a: float, score_b: float) -> tuple[int, int]:
+
+def update_ratings(
+    rating_a: int, rating_b: int, score_a: float, score_b: float
+) -> tuple[int, int]:
     """
     Update the ratings based on the match result.
 

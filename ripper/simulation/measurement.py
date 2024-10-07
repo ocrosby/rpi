@@ -69,10 +69,10 @@ def normalized_kendalls_tau_distance(list1, list2):
     return (1 - tau) / 2
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Example usage
-    list1 = [(1, 'Team A', 0.5), (2, 'Team B', 0.3), (3, 'Team C', 0.2)]
-    list2 = [(1, 'Team B'), (2, 'Team A'), (3, 'Team C')]
+    list1 = [(1, "Team A", 0.5), (2, "Team B", 0.3), (3, "Team C", 0.2)]
+    list2 = [(1, "Team B"), (2, "Team A"), (3, "Team C")]
 
     print("Kendall's Tau:", kendalls_tau(list1, list2))
     print("Spearman's Rank Correlation:", spearmans_rank_correlation(list1, list2))
@@ -83,4 +83,7 @@ if __name__ == '__main__':
     print("Permutation Distance:", permutation_distance(list1, list2))
     print("Mean Absolute Error in Ranks:", mean_absolute_error_in_ranks(list1, list2))
     print("Levenshtein Distance:", levenshtein_distance(list1, list2))
-    print("Normalized Kendall's Tau Distance:", normalized_kendalls_tau_distance(list1, list2))
+    print(
+        "Normalized Kendall's Tau Distance:",
+        normalized_kendalls_tau_distance(list1, list2),
+    )

@@ -7,10 +7,12 @@ from ripper.models.match import Match
 from ripper.indices.base import BaseIndex
 from ripper.utils import list_team_names
 
+
 class DrawsIndex(BaseIndex[int]):
     """
     Calculate the number of draws for each team
     """
+
     def calculate(self, matches: List[Match]) -> List[Tuple[int, str, int]]:
         """
         Calculate the number of draws for each team
@@ -29,6 +31,8 @@ class DrawsIndex(BaseIndex[int]):
         sorted_results = sorted(team_draws.items(), key=lambda x: (x[2], x[1]))
 
         # Update the first element in the tuple after sorting
-        result = [(i + 1, team, draws) for i, (team, draws) in enumerate(team_draws.items())]
+        result = [
+            (i + 1, team, draws) for i, (team, draws) in enumerate(team_draws.items())
+        ]
 
         return result
