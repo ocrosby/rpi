@@ -7,4 +7,25 @@ Author-email: omar.crosby@gmail.com
 Requires-Dist: requests
 Requires-Dist: click
 Requires-Dist: urllib3
-Requires-Dist: setuptools
+Requires-Dist: boto3
+Requires-Dist: isort
+Requires-Dist: pydantic
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: tenacity
+Provides-Extra: dev
+Requires-Dist: black; extra == "dev"
+Requires-Dist: isort; extra == "dev"
+Requires-Dist: invoke; extra == "dev"
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-cov; extra == "dev"
+Requires-Dist: pytest-mock; extra == "dev"
+Requires-Dist: coverage; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Requires-Dist: pylint; extra == "dev"
+Requires-Dist: setuptools; extra == "dev"
+Requires-Dist: wheel; extra == "dev"
+Requires-Dist: twine; extra == "dev"
+Requires-Dist: mypy; extra == "dev"
+Requires-Dist: tox; extra == "dev"
+Requires-Dist: pre-commit; extra == "dev"

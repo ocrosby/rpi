@@ -1,0 +1,26 @@
+[MASTER]
+ignore=CVS,.git,build,dist,.venv,.env
+init-hook='import sys; sys.path.append("ripper", "ripper/dal", "ripper/models")'
+
+[MESSAGES CONTROL]
+disable=C0114,C0115,C0116,C0301,R0914,W3101,W0621,R0912,W1514,C0415,R0903,W0612,C0103,W0105,C0200,E0611,R0902,R0913,R0917
+
+[FORMAT]
+max-line-length=88
+
+[DESIGN]
+max-args=5
+max-locals=15
+max-returns=6
+max-branches=12
+max-statements=50
+max-parents=7
+max-attributes=7
+max-public-methods=20
+
+[TYPECHECK]
+ignored-modules=numpy,scipy
+
+[REPORTS]
+output-format=colorized
+reports=no
