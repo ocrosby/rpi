@@ -1,7 +1,9 @@
-import numpy as np
 from typing import List, Tuple
-from ripper.models.match import Match
+
+import numpy as np
+
 from ripper.indices.base import BaseIndex
+from ripper.models.match import Match
 from ripper.utils import list_team_names
 
 

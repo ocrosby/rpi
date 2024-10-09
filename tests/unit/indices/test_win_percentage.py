@@ -1,7 +1,7 @@
 import pytest
 
-from ripper.models.match import Match
 from ripper.indices.win_percentage import WinPercentageIndex
+from ripper.models.match import Match
 
 
 @pytest.fixture

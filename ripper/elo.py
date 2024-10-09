@@ -1,4 +1,4 @@
-from ripper.constants import K_FACTOR, INITIAL_RATING
+from ripper.constants import INITIAL_RATING, K_FACTOR
 from ripper.models.match import Match
 
 

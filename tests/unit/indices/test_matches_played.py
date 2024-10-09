@@ -1,6 +1,7 @@
 import pytest
-from ripper.models.match import Match
+
 from ripper.indices.matches_played import MatchesPlayedIndex
+from ripper.models.match import Match
 
 
 @pytest.fixture

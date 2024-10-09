@@ -1,21 +1,19 @@
-import os
 import csv
+import os
 import sys
 
 import click
 import requests
 
 import ripper.services.ncaa as ncaa_service
-
-from ripper.models.match import Match
-from ripper.utils import save_matches_to_csv
 from ripper.elo import process_matches_with_elo
-from ripper.indices.spi import SPIIndex
-from ripper.indices.rpi import RPIIndex
-from ripper.indices.record import RecordIndex
 from ripper.indices.colley_matrix import ColleyMatrixIndex
-
+from ripper.indices.record import RecordIndex
+from ripper.indices.rpi import RPIIndex
+from ripper.indices.spi import SPIIndex
+from ripper.models.match import Match
 from ripper.services.nwsl import DataSource as NWSLDataSource
+from ripper.utils import save_matches_to_csv
 
 
 def common_options(func):

@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar, List, Tuple
+from typing import Generic, List, Tuple, TypeVar
+
 from ripper.models.match import Match
 
 T = TypeVar("T")

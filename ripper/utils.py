@@ -3,20 +3,12 @@ This module contains utility functions that are used in the project.
 """
 
 import csv
-
 from datetime import datetime
 from typing import Optional
 
+from ripper.calculations import (get_draws_for_team, get_losses_for_team,
+                                 get_wins_for_team, oowp, owp, rpi, wp)
 from ripper.models.match import Match
-from ripper.calculations import (
-    get_wins_for_team,
-    get_losses_for_team,
-    get_draws_for_team,
-    wp,
-    owp,
-    oowp,
-    rpi,
-)
 
 
 def decompose_stats(stats: dict) -> list[tuple[str, dict]]:

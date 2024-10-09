@@ -3,10 +3,11 @@ This module contains the RPI index class.
 """
 
 from typing import List, Tuple
-from ripper.models.match import Match
+
+from ripper.calculations import oowp, owp, rpi, wp
 from ripper.indices.base import BaseIndex
+from ripper.models.match import Match
 from ripper.utils import list_team_names
-from ripper.calculations import wp, owp, oowp, rpi
 
 
 class RPIIndex(BaseIndex[float]):

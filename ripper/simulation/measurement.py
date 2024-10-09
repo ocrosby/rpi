@@ -1,7 +1,7 @@
+import editdistance
+import numpy as np
 from scipy.stats import kendalltau, spearmanr
 from sklearn.metrics import hamming_loss, mean_absolute_error
-import numpy as np
-import editdistance
 
 
 def kendalls_tau(list1, list2):

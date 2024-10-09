@@ -3,11 +3,12 @@ This module contains the WinPercentageIndex class.
 """
 
 from typing import List, Tuple
-from ripper.models.match import Match
+
 from ripper.indices.base import BaseIndex
-from ripper.utils import list_team_names
-from ripper.indices.wins import WinsIndex
 from ripper.indices.matches_played import MatchesPlayedIndex
+from ripper.indices.wins import WinsIndex
+from ripper.models.match import Match
+from ripper.utils import list_team_names
 
 
 class WinPercentageIndex(BaseIndex[float]):

@@ -1,8 +1,7 @@
 import pytest
 
-
-from ripper.models.match import Match
 from ripper.indices.draws import DrawsIndex
+from ripper.models.match import Match
 
 
 @pytest.fixture

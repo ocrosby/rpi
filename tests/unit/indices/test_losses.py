@@ -1,6 +1,7 @@
 import pytest
-from ripper.models.match import Match
+
 from ripper.indices.losses import LossesIndex
+from ripper.models.match import Match
 
 
 @pytest.fixture

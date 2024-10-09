@@ -31,18 +31,18 @@ jobs:
       run: |
         python3 matches.py get --gender female --division d1 --from-date 2024-08-15
         ripper post -d "Women's DI Matches" --public --token ${{ secrets.GIST_PAT }} female_d1_matches.csv
-        
+
         python3 matches.py get --gender female --division d2 --from-date 2024-08-15
         ripper post -d "Women's DII Matches" --public --token ${{ secrets.GIST_PAT }} female_d2_matches.csv
-        
+
         python3 matches.py get --gender female --division d3 --from-date 2024-08-15
         ripper post -d "Women's DIII Matches" --public --token ${{ secrets.GIST_PAT }} female_d3_matches.csv
-        
+
         python3 matches.py get --gender male --division d1 --from-date 2024-08-15
         ripper post -d "Men's DI Matches" --public --token ${{ secrets.GIST_PAT }} male_d1_matches.csv
-        
+
         python3 matches.py get --gender male --division d2 --from-date 2024-08-15
         ripper post -d "Men's DII Matches" --public --token ${{ secrets.GIST_PAT }} male_d2_matches.csv
-        
+
         python3 matches.py get --gender male --division d3 --from-date 2024-08-15
         ripper post -d "Men's DIII Matches" --public --token ${{ secrets.GIST_PAT }} male_d3_matches.csv

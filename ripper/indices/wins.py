@@ -3,8 +3,9 @@ This module contains the WinsIndex class.
 """
 
 from typing import List, Tuple
-from ripper.models.match import Match
+
 from ripper.indices.base import BaseIndex
+from ripper.models.match import Match
 from ripper.utils import list_team_names
 
 

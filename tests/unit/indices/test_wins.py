@@ -1,6 +1,7 @@
 import pytest
-from ripper.models.match import Match
+
 from ripper.indices.wins import WinsIndex
+from ripper.models.match import Match
 
 
 @pytest.fixture

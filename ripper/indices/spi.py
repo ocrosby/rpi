@@ -7,8 +7,9 @@ This module contains the SPIIndex class.
 """
 
 from typing import List, Tuple
-from ripper.models.match import Match
+
 from ripper.indices.base import BaseIndex
+from ripper.models.match import Match
 from ripper.utils import list_team_names
 
 
@@ -17,13 +18,13 @@ class SPIIndex(BaseIndex[float]):
 
     """
     Calculate the Soccer Power Index for each team
-    
+
     1. Initialize Team SPI: Create a dictionary to store the SPI for each team.
     2. Calculate Team SPI: Iterate through the matches and update the SPI for each team based on goals scored and goals conceded.
     3. Adjust SPI: Use a predictive model to adjust the SPI based on the strength of opposition and other factors.
     4. Convert to List of Tuples: Convert the dictionary to a list of tuples, where each tuple contains the team name and its SPI.
     5. Sort the List: Sort the list by SPI in descending order and then by team name in ascending order.
-    6. Generate Result: Create a list of tuples containing the rank, team name, and SPI.    
+    6. Generate Result: Create a list of tuples containing the rank, team name, and SPI.
     """
 
     def calculate(

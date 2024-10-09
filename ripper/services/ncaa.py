@@ -7,13 +7,9 @@ from typing import Optional
 
 import requests
 
-from ripper.utils import (
-    save_matches_to_csv,
-    save_stats_to_csv,
-    calculate_statistics,
-    sort_stats,
-)
 from ripper.models.match import Match
+from ripper.utils import (calculate_statistics, save_matches_to_csv,
+                          save_stats_to_csv, sort_stats)
 
 SEASON_START_DATE = datetime(2024, 8, 14)
 

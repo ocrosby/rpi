@@ -32,3 +32,4 @@ threadpoolctl
 tzdata
 urllib3
 pre-commit
+types-requests
