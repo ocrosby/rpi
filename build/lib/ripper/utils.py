@@ -6,15 +6,8 @@ import csv
 from datetime import datetime
 from typing import Optional
 
-from ripper.calculations import (
-    get_draws_for_team,
-    get_losses_for_team,
-    get_wins_for_team,
-    oowp,
-    owp,
-    rpi,
-    wp,
-)
+from ripper.calculations import (get_draws_for_team, get_losses_for_team,
+                                 get_wins_for_team, oowp, owp, rpi, wp)
 from ripper.models.match import Match
 
 
