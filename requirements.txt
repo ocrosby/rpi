@@ -13,3 +13,4 @@ urllib3
 types-requests
 invoke
 black
+isort
