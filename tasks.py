@@ -4,6 +4,7 @@ from invoke import task
 @task(aliases=["f"])
 def format(c):
     """Format code."""
+    c.run("isort .")
     c.run("black .")
 
 
@@ -54,3 +55,12 @@ def publish(c):
 def all(c):
     """Run all tasks."""
     pass
+
+
+@task(aliases=["m"])
+def matches(c):
+    for gender in ["male", "female"]:
+        for division in ["d1", "d2", "d3"]:
+            c.run(
+                f"python3 matches.py get --gender {gender} --division {division} --from-date 2024-08-15"
+            )
