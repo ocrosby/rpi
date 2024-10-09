@@ -199,6 +199,20 @@ def get_matches(gender: str, division: str, date: datetime) -> list[dict]:
             inner_game = game['game']
             home = inner_game['home']
             away = inner_game['away']
+            status = inner_game['gameState']
+
+            if status == 'pre':
+                away_score = 0
+                home_score = 0
+            else:
+                away_score = away['score']
+                home_score = home['score']
+
+                if isinstance(away_score, str):
+                    away_score = int(away_score)
+
+                if isinstance(home_score, str):
+                    home_score = int(home_score)
 
             matches.append({
                 'id': int(inner_game['gameID']),
@@ -207,12 +221,12 @@ def get_matches(gender: str, division: str, date: datetime) -> list[dict]:
                 'start_time_epoch': inner_game['startTimeEpoch'],
                 'away': {
                     'name': away['names']['full'],
-                    'score': away['score'],
+                    'score': away_score,
                     'conference': away['conferences'][0]['conferenceName'],
                 },
                 'home': {
                     'name': home['names']['full'],
-                    'score': home['score'],
+                    'score': home_score,
                     'conference': home['conferences'][0]['conferenceName'],
                 }
             })
