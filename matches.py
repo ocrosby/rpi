@@ -111,10 +111,18 @@ def save_team_names_to_csv(team_names, filename):
         for team in team_names:
             writer.writerow([team])  # Write each team name in a row
 
+def epoch_to_human_readable(epoch: int) -> str:
+    """
+    Convert an epoch number to a human-readable date string.
+
+    :param epoch: The epoch time in seconds
+    :return: A human-readable date string in the format 'YYYY-MM-DD HH:MM:SS'
+    """
+    return datetime.fromtimestamp(epoch).strftime('%Y-%m-%d %H:%M:%S')
 
 def save_matches_to_csv(sorted_matches, filename):
     with open(filename, mode='w', newline='') as file:
-        fieldnames = ['id', 'status', 'updated_time', 'start_time_epoch',
+        fieldnames = ['id', 'status', 'updated_time', 'start_time',
                       'away_name', 'away_score', 'away_conference',
                       'home_name', 'home_score', 'home_conference']
 
@@ -123,11 +131,25 @@ def save_matches_to_csv(sorted_matches, filename):
 
         # Write each match as a row
         for match in sorted_matches:
+            updated_time = match['updated_time']
+            if isinstance(updated_time, int):
+                updated_time = epoch_to_human_readable(updated_time)
+            elif isinstance(updated_time, str):
+                updated_time = int(updated_time)
+                updated_time = epoch_to_human_readable(updated_time)
+
+            start_time = match['start_time_epoch']
+            if isinstance(start_time, int):
+                start_time = epoch_to_human_readable(start_time)
+            elif isinstance(start_time, str):
+                start_time = int(start_time)
+                start_time = epoch_to_human_readable(start_time)
+
             writer.writerow({
                 'id': match['id'],
                 'status': match['status'],
-                'updated_time': match['updated_time'],
-                'start_time_epoch': match['start_time_epoch'],
+                'updated_time': updated_time,
+                'start_time': start_time,
                 'away_name': match['away']['name'],
                 'away_score': match['away']['score'],
                 'away_conference': match['away']['conference'],
