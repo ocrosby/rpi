@@ -202,7 +202,7 @@ def before_retry(retry_state):
     )
 
 
-@retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
+# @retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
 def get_matches(gender: str, division: str, date: datetime) -> list[dict]:
     """
     Get matches from the NCAA given a date
@@ -235,10 +235,16 @@ def get_matches(gender: str, division: str, date: datetime) -> list[dict]:
                 home_score = home["score"]
 
                 if isinstance(away_score, str):
-                    away_score = int(away_score)
+                    if away_score == "":
+                        away_score = 0
+                    else:
+                        away_score = int(away_score)
 
                 if isinstance(home_score, str):
-                    home_score = int(home_score)
+                    if home_score == "":
+                        home_score = 0
+                    else:
+                        home_score = int(home_score)
 
             matches.append(
                 {
