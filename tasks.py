@@ -11,6 +11,13 @@ def format(c):
 def clean(c):
     """Clean up build artifacts."""
     c.run("rm -rf build dist *.egg-info")
+    c.run("find . -name '*.pyc' -delete")
+    c.run("find . -name '__pycache__' -delete")
+    c.run("find . -name '.pytest_cache' -delete")
+    c.run("find . -name '.mypy_cache' -delete")
+    c.run("find . -name '.coverage' -delete")
+    c.run("find . -name '*.csv' -delete")
+    c.run("find . -name '*.log' -delete")
 
 
 @task(aliases=["i"])
