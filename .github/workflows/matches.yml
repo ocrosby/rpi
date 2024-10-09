@@ -32,31 +32,31 @@ jobs:
       run: |
         python3 matches.py get --gender female --division d1 --from-date 2024-08-15
         ripper post -d "Women's DI Matches" --public --token ${{ secrets.GIST_PAT }} female_d1_matches.csv
-        ripper post -d "Women's DI Team Conference Mapping" --public --token ${{ secrets.GIST_PAT }} female_d1_team_conference_map.csv
-        ripper post -d "Women's DI Teams" --public --token ${{ secrets.GIST_PAT }} female_d1_team_names.csv
+#        ripper post -d "Women's DI Team Conference Mapping" --public --token ${{ secrets.GIST_PAT }} female_d1_team_conference_map.csv
+#        ripper post -d "Women's DI Teams" --public --token ${{ secrets.GIST_PAT }} female_d1_team_names.csv
         
         python3 matches.py get --gender female --division d2 --from-date 2024-08-15
         ripper post -d "Women's DII Matches" --public --token ${{ secrets.GIST_PAT }} female_d2_matches.csv
-        ripper post -d "Women's DII Team Conference Mapping" --public --token ${{ secrets.GIST_PAT }} female_d2_team_conference_map.csv
-        ripper post -d "Women's DII Teams" --public --token ${{ secrets.GIST_PAT }} female_d2_team_names.csv
+#        ripper post -d "Women's DII Team Conference Mapping" --public --token ${{ secrets.GIST_PAT }} female_d2_team_conference_map.csv
+#        ripper post -d "Women's DII Teams" --public --token ${{ secrets.GIST_PAT }} female_d2_team_names.csv
         
         python3 matches.py get --gender female --division d3 --from-date 2024-08-15
         ripper post -d "Women's DIII Matches" --public --token ${{ secrets.GIST_PAT }} female_d3_matches.csv
-        ripper post -d "Women's DIII Team Conference Mapping" --public --token ${{ secrets.GIST_PAT }} female_d3_team_conference_map.csv
-        ripper post -d "Women's DIII Teams" --public --token ${{ secrets.GIST_PAT }} female_d3_team_names.csv
+#        ripper post -d "Women's DIII Team Conference Mapping" --public --token ${{ secrets.GIST_PAT }} female_d3_team_conference_map.csv
+#        ripper post -d "Women's DIII Teams" --public --token ${{ secrets.GIST_PAT }} female_d3_team_names.csv
         
         python3 matches.py get --gender male --division d1 --from-date 2024-08-15
         ripper post -d "Men's DI Matches" --public --token ${{ secrets.GIST_PAT }} male_d1_matches.csv
-        ripper post -d "Men's DI Team Conference Mapping" --public --token ${{ secrets.GIST_PAT }} male_d1_team_conference_map.csv
-        ripper post -d "Men's DI Teams" --public --token ${{ secrets.GIST_PAT }} male_d1_team_names.csv
+#        ripper post -d "Men's DI Team Conference Mapping" --public --token ${{ secrets.GIST_PAT }} male_d1_team_conference_map.csv
+#        ripper post -d "Men's DI Teams" --public --token ${{ secrets.GIST_PAT }} male_d1_team_names.csv
         
         python3 matches.py get --gender male --division d2 --from-date 2024-08-15
         ripper post -d "Men's DII Matches" --public --token ${{ secrets.GIST_PAT }} male_d2_matches.csv
-        ripper post -d "Men's DII Team Conference Mapping" --public --token ${{ secrets.GIST_PAT }} male_d2_team_conference_map.csv
-        ripper post -d "Men's DII Teams" --public --token ${{ secrets.GIST_PAT }} male_d2_team_names.csv
+#        ripper post -d "Men's DII Team Conference Mapping" --public --token ${{ secrets.GIST_PAT }} male_d2_team_conference_map.csv
+#        ripper post -d "Men's DII Teams" --public --token ${{ secrets.GIST_PAT }} male_d2_team_names.csv
         
         python3 matches.py get --gender male --division d3 --from-date 2024-08-15
         ripper post -d "Men's DIII Matches" --public --token ${{ secrets.GIST_PAT }} male_d3_matches.csv
-        ripper post -d "Men's DIII Team Conference Mapping" --public --token ${{ secrets.GIST_PAT }} male_d3_team_conference_map.csv
-        ripper post -d "Men's DIII Teams" --public --token ${{ secrets.GIST_PAT }} male_d3_team_names.csv
+#        ripper post -d "Men's DIII Team Conference Mapping" --public --token ${{ secrets.GIST_PAT }} male_d3_team_conference_map.csv
+#        ripper post -d "Men's DIII Teams" --public --token ${{ secrets.GIST_PAT }} male_d3_team_names.csv
         
