@@ -1,19 +1,40 @@
 """
 This module reads and exports matches from the NCAA given a gender, start date, and optional end date.
 If the end date is not provided, the current date is used.
+
+This script was developed with Python 3.12
+
+To utilize this you'll need to install the following dependencies:
+
+pip install click
+pip install requests
+pip install tenacity
+
+Running it:
+
+> python3 matches.py get --gender female --division d1 --from-date 2024-08-15
+
+This call will request all matches since the beginning of the season for women's soccer and save
+
+female_d1_matches.csv
+female_d1_team_conference_map.csv
+female_d1_team_names.csv
 """
 
+import csv
 import logging
+import os.path
 import threading
 
 from datetime import datetime, timedelta
 from concurrent.futures import ThreadPoolExecutor
-from nis import match
 
 import click
 import requests
 
 from tenacity import retry, stop_after_attempt, wait_fixed
+
+BAD_URLS_LOG = 'bad_urls.log'
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -26,7 +47,6 @@ def cli():
     Get matches from the NCAA given
     :return:
     """
-    print("Todo: Implement this function")
 
 
 def build_url(gender: str, division: str, date: datetime) -> str:
@@ -56,6 +76,81 @@ def build_url(gender: str, division: str, date: datetime) -> str:
 
     return url
 
+def get_sorted_team_names(matches):
+    team_names = set()  # Using a set to avoid duplicates
+
+    for match in matches:
+        team_names.add(match['away']['name'])  # Add away team name
+        team_names.add(match['home']['name'])  # Add home team name
+
+    # Return the sorted list of team names
+    return sorted(team_names)
+
+def map_teams_to_conference(matches):
+    team_conference_map = {}
+
+    for match in matches:
+        # Map the away team to its conference only if not already mapped
+        away_team = match['away']['name']
+        away_conference = match['away']['conference']
+        if away_team not in team_conference_map:
+            team_conference_map[away_team] = away_conference
+
+        # Map the home team to its conference only if not already mapped
+        home_team = match['home']['name']
+        home_conference = match['home']['conference']
+        if home_team not in team_conference_map:
+            team_conference_map[home_team] = home_conference
+
+    return team_conference_map
+
+def save_team_names_to_csv(team_names, filename):
+    with open(filename, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Team Name'])  # Write the header
+        for team in team_names:
+            writer.writerow([team])  # Write each team name in a row
+
+
+def save_matches_to_csv(sorted_matches, filename):
+    with open(filename, mode='w', newline='') as file:
+        fieldnames = ['id', 'status', 'updated_time', 'start_time_epoch',
+                      'away_name', 'away_score', 'away_conference',
+                      'home_name', 'home_score', 'home_conference']
+
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()  # Write the header
+
+        # Write each match as a row
+        for match in sorted_matches:
+            writer.writerow({
+                'id': match['id'],
+                'status': match['status'],
+                'updated_time': match['updated_time'],
+                'start_time_epoch': match['start_time_epoch'],
+                'away_name': match['away']['name'],
+                'away_score': match['away']['score'],
+                'away_conference': match['away']['conference'],
+                'home_name': match['home']['name'],
+                'home_score': match['home']['score'],
+                'home_conference': match['home']['conference']
+            })
+
+
+def save_team_conference_map_to_csv(team_conference_map, filename):
+    with open(filename, mode='w', newline='') as file:
+        fieldnames = ['Team Name', 'Conference']
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()  # Write the header
+
+        # Sort the team names alphabetically and write each team and conference
+        for team in sorted(team_conference_map):
+            writer.writerow({'Team Name': team, 'Conference': team_conference_map[team]})
+
+def log_bad_url(url, filename=BAD_URLS_LOG):
+    with open(filename, mode='a') as file:  # Open the file in append mode
+        file.write(f"{url}\n")  # Write the URL followed by a newline
+
 def before_retry(retry_state):
     logger.info(f"Retrying {retry_state.fn.__name__} - Attempt {retry_state.attempt_number}")
 
@@ -71,26 +166,23 @@ def get_matches(gender: str, division: str, date: datetime) -> list[dict]:
     """
     target_url = build_url(gender, division, date)
 
-    with print_lock:
-        logging.info(f"URL: {target_url}")
-
     response = requests.get(target_url)
     if response.status_code == 200:
-        with print_lock:
-            logging.info(f"Successfully got matches from '{target_url}' ...")
         data = response.json()
 
         games = data['games']
 
         matches = []
         for game in games:
-            home = game['home']
-            away = game['away']
+            inner_game = game['game']
+            home = inner_game['home']
+            away = inner_game['away']
+
             matches.append({
-                'id': game['gameID'],
-                'status': game['gameState'],
-                'updated_time': int(datetime.strptime(game['updated_at'], '%m-%d-%Y %H:%M:%S').timestamp()),
-                'start_time_epoch': game['startTimeEpoch'],
+                'id': int(inner_game['gameID']),
+                'status': inner_game['gameState'],
+                'updated_time': int(datetime.strptime(data['updated_at'], '%m-%d-%Y %H:%M:%S').timestamp()),
+                'start_time_epoch': inner_game['startTimeEpoch'],
                 'away': {
                     'name': away['names']['full'],
                     'score': away['score'],
@@ -106,7 +198,7 @@ def get_matches(gender: str, division: str, date: datetime) -> list[dict]:
         return matches
     elif response.status_code == 404:
         with print_lock:
-            logging.error(f"No matches found for {target_url}")
+            log_bad_url(target_url)
         return []
     else:
         with print_lock:
@@ -123,10 +215,15 @@ def get(gender: str, division: str, from_date: datetime, to_date: datetime) -> l
     """
     Get matches from the NCAA by gender and division.
     """
+    if os.path.exists(BAD_URLS_LOG):
+        os.remove(BAD_URLS_LOG)
+
     print(f"Gender: {gender}")
     print(f"Division: {division}")
     print(f"From: {from_date}")
     print(f"To: {to_date}")
+
+    match_lock = threading.Lock()
 
     matches = []
 
@@ -139,10 +236,18 @@ def get(gender: str, division: str, from_date: datetime, to_date: datetime) -> l
     with ThreadPoolExecutor() as executor:
         results = executor.map(lambda date: get_matches(gender, division, date), dates)
         for result in results:
-            matches.extend(result)
+            with match_lock:
+                matches.extend(result)
 
-    for match in matches:
-        print(match)
+    # Sorting the matches by 'start_time_epoch'
+    sorted_matches = sorted(matches, key=lambda x: int(x['start_time_epoch']))
+
+    team_names = get_sorted_team_names(sorted_matches)
+    team_conference_map = map_teams_to_conference(sorted_matches)
+
+    save_team_names_to_csv(team_names, f'{gender}_{division}_team_names.csv')
+    save_matches_to_csv(sorted_matches, f'{gender}_{division}_matches.csv')
+    save_team_conference_map_to_csv(team_conference_map, f'{gender}_{division}_team_conference_map.csv')
 
 if __name__ == "__main__":
     cli()
