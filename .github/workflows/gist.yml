@@ -41,11 +41,11 @@ jobs:
         ripper elo -s ncaa -i matches.csv -o elo.csv
         ripper colley -s ncaa -i matches.csv -o colley.csv
         ripper record -s ncaa -i matches.csv -o record.csv
-        ripper matches -s nwsl -o nwsl_matches.csv
-        ripper rpi -s nwsl -i nwsl_matches.csv -o nwsl_rpi.csv
-        ripper elo -s nwsl -i nwsl_matches.csv -o nwsl_elo.csv
+#        ripper matches -s nwsl -o nwsl_matches.csv
+#        ripper rpi -s nwsl -i nwsl_matches.csv -o nwsl_rpi.csv
+#        ripper elo -s nwsl -i nwsl_matches.csv -o nwsl_elo.csv
 
-        ripper record -s nwsl -i nwsl_matches.csv -o nwsl_record.csv
+#        ripper record -s nwsl -i nwsl_matches.csv -o nwsl_record.csv
 
     - name: Run Python script to generate and post Gist
       run: |
@@ -54,7 +54,7 @@ jobs:
         ripper post -d "Elo Ratings" --public --token ${{ secrets.GIST_PAT }} elo.csv
         ripper post -d "Colley Ratings" --public --token ${{ secrets.GIST_PAT }} colley.csv
         ripper post -d "Record" --public --token ${{ secrets.GIST_PAT }} record.csv
-        ripper post -d "NWSL Matches" --public --token ${{ secrets.GIST_PAT }} nwsl_matches.csv
-        ripper post -d "NWSL RPI Ratings" --public --token ${{ secrets.GIST_PAT }} nwsl_rpi.csv
-        ripper post -d "NWSL Elo Ratings" --public --token ${{ secrets.GIST_PAT }} nwsl_elo.csv
-        ripper post -d "NWSL Record" --public --token ${{ secrets.GIST_PAT }} nwsl_record.csv
+#        ripper post -d "NWSL Matches" --public --token ${{ secrets.GIST_PAT }} nwsl_matches.csv
+#        ripper post -d "NWSL RPI Ratings" --public --token ${{ secrets.GIST_PAT }} nwsl_rpi.csv
+#        ripper post -d "NWSL Elo Ratings" --public --token ${{ secrets.GIST_PAT }} nwsl_elo.csv
+#        ripper post -d "NWSL Record" --public --token ${{ secrets.GIST_PAT }} nwsl_record.csv
