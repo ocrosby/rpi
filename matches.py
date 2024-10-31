@@ -246,9 +246,15 @@ def get_matches(gender: str, division: str, date: datetime) -> list[dict]:
                     else:
                         home_score = int(home_score)
 
+            game_id = inner_game["gameID"]
+            if game_id.isdigit():
+                game_id = int(game_id)
+            else:
+                game_id = None
+
             matches.append(
                 {
-                    "id": int(inner_game["gameID"]),
+                    "id": game_id,
                     "status": inner_game["gameState"],
                     "updated_time": int(
                         datetime.strptime(
